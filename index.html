@@ -1,4 +1,4 @@
-<title>Blueprint Access</title>
+<title>The Blueprint Room</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&family=IBM+Plex+Mono:wght@500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -7,12 +7,14 @@
     --bg: #eaf0f6;
     --bg-line: #c7d5e2;
     --surface: #ffffff;
+    --surface-2: #f4f7fa;
     --surface-edge: #c7d5e2;
     --navy: #003b63;
     --navy-soft: #2c5a7c;
     --blue: #005b8e;
     --accent: #6fa62f;
     --accent-ink: #14230c;
+    --accent-soft: #e5f0d8;
     --text: #263746;
     --text-dim: #5b7186;
     --error: #b8412f;
@@ -23,12 +25,14 @@
       --bg: #071f36;
       --bg-line: rgba(200, 224, 245, 0.14);
       --surface: #0c2c49;
+      --surface-2: #0f3454;
       --surface-edge: rgba(200, 224, 245, 0.22);
       --navy: #dcebfa;
       --navy-soft: #9dc1e0;
       --blue: #86c6f2;
       --accent: #9ed65c;
       --accent-ink: #0e2007;
+      --accent-soft: rgba(158, 214, 92, 0.16);
       --text: #cfe1f2;
       --text-dim: #85a7c4;
       --error: #ff8f77;
@@ -39,12 +43,14 @@
     --bg: #071f36;
     --bg-line: rgba(200, 224, 245, 0.14);
     --surface: #0c2c49;
+    --surface-2: #0f3454;
     --surface-edge: rgba(200, 224, 245, 0.22);
     --navy: #dcebfa;
     --navy-soft: #9dc1e0;
     --blue: #86c6f2;
     --accent: #9ed65c;
     --accent-ink: #0e2007;
+    --accent-soft: rgba(158, 214, 92, 0.16);
     --text: #cfe1f2;
     --text-dim: #85a7c4;
     --error: #ff8f77;
@@ -52,95 +58,117 @@
   }
 
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0;
-    min-height: 100%;
     background: var(--bg);
     background-image:
       linear-gradient(var(--bg-line) 1px, transparent 1px),
       linear-gradient(90deg, var(--bg-line) 1px, transparent 1px);
-    background-size: 28px 28px;
+    background-size: 26px 26px;
     color: var(--text);
     font-family: "Roboto", Arial, Helvetica, sans-serif;
     display: flex;
     justify-content: center;
-    padding: max(32px, env(safe-area-inset-top, 0px)) 16px max(32px, env(safe-area-inset-bottom, 0px));
   }
 
-  .stage {
+  .app {
     width: 100%;
-    max-width: 460px;
+    max-width: 480px;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding-top: 22px;
-  }
-
-  .card {
     position: relative;
-    width: 100%;
-    background: var(--surface);
-    border: 1.5px solid var(--surface-edge);
-    border-radius: 4px;
-    box-shadow: 0 24px 48px -24px var(--shadow);
-    padding: 40px 32px 34px;
-    transition: transform 0.4s ease;
-  }
-  .card::before, .card::after,
-  .card .corner-tl, .card .corner-br {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    pointer-events: none;
-  }
-  .card::before { top: -1px; left: -1px; border-top: 2px solid var(--navy); border-left: 2px solid var(--navy); }
-  .card::after { top: -1px; right: -1px; border-top: 2px solid var(--navy); border-right: 2px solid var(--navy); }
-  .corner-tl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--navy); border-left: 2px solid var(--navy); }
-  .corner-br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--navy); border-right: 2px solid var(--navy); }
-
-  .sheet-tag {
-    position: absolute;
-    top: -14px;
-    right: 24px;
-    background: var(--navy);
-    color: var(--bg);
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    padding: 5px 10px;
-    border-radius: 2px;
-    transform: rotate(2deg);
-    box-shadow: 0 6px 14px -6px var(--shadow);
   }
 
+  .screen {
+    flex: 1;
+    padding: max(24px, env(safe-area-inset-top, 0px)) 20px calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+
+  [hidden] { display: none !important; }
+
+  /* ---------- shared bits ---------- */
   .eyebrow {
-    margin: 0 0 14px;
+    margin: 0 0 10px;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.09em;
     text-transform: uppercase;
     color: var(--blue);
   }
-
-  h1 {
+  h1.title {
     margin: 0;
     font-family: "Archivo", Arial, sans-serif;
     font-weight: 900;
-    font-size: clamp(1.5rem, 5vw, 1.82rem);
+    font-size: clamp(1.5rem, 6vw, 1.86rem);
     line-height: 1.08;
     letter-spacing: -0.01em;
     color: var(--navy);
     text-wrap: balance;
   }
-  h1 span { color: var(--accent); }
+  h1.title span { color: var(--accent); }
 
-  .deck {
+  .sheet {
+    position: relative;
+    background: var(--surface);
+    border: 1.5px solid var(--surface-edge);
+    border-radius: 4px;
+    box-shadow: 0 20px 40px -26px var(--shadow);
+  }
+  .sheet::before, .sheet::after, .sheet .corner-bl, .sheet .corner-br {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+  }
+  .sheet::before { top: -1px; left: -1px; border-top: 2px solid var(--navy); border-left: 2px solid var(--navy); }
+  .sheet::after { top: -1px; right: -1px; border-top: 2px solid var(--navy); border-right: 2px solid var(--navy); }
+  .sheet .corner-bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--navy); border-left: 2px solid var(--navy); }
+  .sheet .corner-br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--navy); border-right: 2px solid var(--navy); }
+
+  .tag {
+    display: inline-block;
+    background: var(--navy);
+    color: var(--bg);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 4px 9px;
+    border-radius: 2px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 20px;
+    border-radius: 3px;
+    font-family: "Roboto", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
+    border: 1.5px solid transparent;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn-primary:hover { filter: brightness(0.95); }
+  .btn-ghost { background: transparent; color: var(--blue); border-color: var(--blue); }
+  .btn-ghost:hover { background: var(--surface-2); }
+  .btn svg { width: 15px; height: 15px; }
+  .btn-full { width: 100%; }
+
+  /* ---------- dashboard ---------- */
+  #view-dashboard .masthead { margin-bottom: 20px; }
+  #view-dashboard .deck {
     margin: 10px 0 0;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -149,83 +177,153 @@
     border-top: 1px dashed var(--surface-edge);
   }
 
-  .prompt {
-    margin: 22px 0 0;
-    font-size: 0.98rem;
-    line-height: 1.55;
-    max-width: 34ch;
+  .timer-sheet { padding: 18px 18px 16px; margin-top: 18px; }
+  .timer-label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 0 0 10px;
+  }
+  .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .timer-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .timer-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: var(--navy);
+    background: var(--surface-2);
+    border: 1px solid var(--surface-edge);
+    border-radius: 3px;
+    width: 100%;
+    text-align: center;
+    padding: 6px 0;
+  }
+  .timer-unit { font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); }
+  .timer-done { font-size: 0.86rem; color: var(--text-dim); margin: 4px 0 0; }
+
+  .progress-sheet { padding: 18px; margin-top: 14px; }
+  .progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .progress-head h2 { margin: 0; font-size: 0.95rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
+  .progress-count { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .progress-bar { margin-top: 10px; height: 8px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--surface-edge); overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s ease; }
+
+  .next-sheet { padding: 18px; margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .next-sheet .tag { align-self: flex-start; }
+  .next-sheet h2 { margin: 2px 0 0; font-size: 1.05rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
+  .next-sheet p { margin: 0; font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; }
+
+  .reset-link {
+    display: block;
+    margin: 22px auto 0;
+    background: none;
+    border: none;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 6px;
   }
 
-  .stat-row {
-    margin: 22px 0 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
+  /* ---------- missions list ---------- */
+  .section-label {
+    margin: 22px 0 10px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
   }
+  .section-label:first-of-type { margin-top: 4px; }
+
+  .mission-list { display: flex; flex-direction: column; gap: 10px; }
+  .mission-tile {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 16px;
+    background: var(--surface);
+    border: 1.5px solid var(--surface-edge);
+    border-radius: 4px;
+    font-family: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  button.mission-tile:hover { border-color: var(--blue); }
+  .mission-tile:active { transform: translateY(1px); }
+  .mission-tile.is-complete { border-color: var(--accent); }
+  .mission-tile.is-soon { opacity: 0.62; border-style: dashed; cursor: default; }
+
+  .mission-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .mission-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .mission-status {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .mission-status.is-complete { background: var(--accent-soft); color: var(--accent); }
+  .mission-tile h3 { margin: 8px 0 4px; font-size: 1rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
+  .mission-tile p { margin: 0; font-size: 0.85rem; color: var(--text-dim); line-height: 1.45; }
+  .mission-tile.is-soon h3, .mission-tile.is-soon .mission-num { color: var(--text-dim); }
+
+  /* ---------- mission detail ---------- */
+  .mission-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .back-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 3px;
+    background: var(--surface); border: 1.5px solid var(--surface-edge);
+    color: var(--navy); cursor: pointer; flex-shrink: 0;
+  }
+  .back-btn svg { width: 17px; height: 17px; }
+  .mission-header .tag { flex-shrink: 0; }
+
+  .puzzle-sheet { padding: 30px 26px 28px; }
+  .prompt { margin: 0 0 20px; font-size: 0.96rem; line-height: 1.55; }
+
+  .stat-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
   .stat { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
   .stat-num {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-weight: 600;
-    font-size: 1.7rem;
-    color: var(--navy);
+    font-weight: 600; font-size: 1.6rem; color: var(--navy);
     font-variant-numeric: tabular-nums;
   }
-  .stat-label {
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    text-align: center;
-  }
-  .dim-tick {
-    flex: 1;
-    height: 1px;
-    background: var(--surface-edge);
-    position: relative;
-    margin: 0 2px;
-    top: -12px;
-  }
-  .dim-tick::before, .dim-tick::after {
-    content: "";
-    position: absolute;
-    top: -3px;
-    width: 1px;
-    height: 7px;
-    background: var(--surface-edge);
-  }
+  .stat-label { font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-dim); text-align: center; }
+  .dim-tick { flex: 1; height: 1px; background: var(--surface-edge); position: relative; margin: 0 2px; top: -11px; }
+  .dim-tick::before, .dim-tick::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--surface-edge); }
   .dim-tick::before { left: 0; }
   .dim-tick::after { right: 0; }
 
-  .instructions {
-    margin: 18px 0 0;
-    font-size: 0.86rem;
-    color: var(--text-dim);
-    line-height: 1.5;
-  }
+  .instructions { margin: 16px 0 0; font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
 
-  .code-form {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-  }
+  .code-form { margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
   .code-boxes { display: flex; gap: 10px; }
   .digit {
-    width: 52px;
-    height: 60px;
-    text-align: center;
+    width: 50px; height: 58px; text-align: center;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 1.7rem;
-    font-weight: 600;
-    color: var(--navy);
-    background: var(--bg);
-    border: 1.5px solid var(--surface-edge);
-    border-radius: 4px;
-    outline: none;
-    transition: border-color 0.15s ease, transform 0.15s ease;
+    font-size: 1.6rem; font-weight: 600; color: var(--navy);
+    background: var(--surface-2); border: 1.5px solid var(--surface-edge);
+    border-radius: 4px; outline: none;
+    transition: border-color 0.15s ease;
   }
   .digit:focus { border-color: var(--blue); border-width: 2px; }
   .code-boxes.shake { animation: shake 0.4s ease; }
@@ -237,230 +335,531 @@
     80% { transform: translateX(4px); }
   }
 
-  .unlock-btn {
-    width: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 13px 20px;
-    background: var(--accent);
-    color: var(--accent-ink);
-    border: 1.5px solid var(--accent);
-    border-radius: 3px;
-    font-family: "Roboto", Arial, sans-serif;
-    font-weight: 700;
-    font-size: 0.96rem;
-    cursor: pointer;
-    transition: filter 0.15s ease, transform 0.1s ease;
-  }
-  .unlock-btn:hover { filter: brightness(0.94); }
-  .unlock-btn:active { transform: translateY(1px); }
-  .unlock-btn svg { width: 16px; height: 16px; }
+  .feedback { min-height: 18px; margin: 0; font-size: 0.82rem; font-weight: 500; color: var(--error); text-align: center; }
 
-  .feedback {
-    min-height: 18px;
-    margin: 2px 0 0;
-    font-size: 0.83rem;
-    font-weight: 500;
-    color: var(--error);
-    text-align: center;
-  }
-
-  .success-view {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding-top: 6px;
-  }
+  .success-block { display: flex; flex-direction: column; align-items: center; text-align: center; }
   .stamp {
-    width: 116px;
-    height: 116px;
-    border-radius: 50%;
-    border: 2.5px solid var(--accent);
-    color: var(--accent);
+    width: 108px; height: 108px; border-radius: 50%;
+    border: 2.5px solid var(--accent); color: var(--accent);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    transform: rotate(-8deg);
+    font-family: "Archivo", Arial, sans-serif; font-weight: 900; font-size: 11.5px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin: 6px 0 20px;
+  }
+  .stamp svg { width: 28px; height: 28px; }
+  .stamp-check { stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw 0.5s ease 0.15s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .success-text { margin: 0; max-width: 32ch; font-size: 0.94rem; line-height: 1.6; color: var(--text); }
+  .success-actions { margin-top: 22px; width: 100%; }
+
+  .soon-block { padding: 30px 26px; text-align: center; }
+  .soon-block p { margin: 10px 0 0; color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; }
+
+  /* ---------- bottom nav ---------- */
+  .bottom-nav {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    background: var(--surface);
+    border-top: 1.5px solid var(--surface-edge);
+    padding: 8px 14px calc(8px + env(safe-area-inset-bottom, 0px));
+    gap: 6px;
+  }
+  .nav-btn {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    transform: rotate(-8deg);
-    font-family: "Archivo", Arial, sans-serif;
-    font-weight: 900;
-    font-size: 12.5px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin: 14px 0 22px;
-  }
-  .stamp svg { width: 30px; height: 30px; }
-  .stamp-check {
-    stroke-dasharray: 40;
-    stroke-dashoffset: 40;
-    animation: draw 0.5s ease 0.15s forwards;
-  }
-  @keyframes draw { to { stroke-dashoffset: 0; } }
-
-  .success-text {
-    margin: 0;
-    max-width: 32ch;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--text);
-  }
-
-  .key-line {
-    margin-top: 22px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    gap: 3px;
+    padding: 6px 4px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-dim);
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11.5px;
+    font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--navy-soft);
-    padding-top: 16px;
-    border-top: 1px dashed var(--surface-edge);
-    width: 100%;
-    justify-content: center;
+    cursor: pointer;
   }
-  .key-line svg { width: 15px; height: 15px; color: var(--accent); }
+  .nav-btn svg { width: 19px; height: 19px; }
+  .nav-btn.is-active { color: var(--navy); background: var(--surface-2); }
 
-  [hidden] { display: none !important; }
+  /* ---------- toast ---------- */
+  .toast {
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 448px;
+    background: var(--navy);
+    color: var(--bg);
+    border-radius: 4px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    box-shadow: 0 16px 32px -14px var(--shadow);
+    z-index: 20;
+    animation: toast-in 0.3s ease;
+  }
+  .toast svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; color: var(--accent); }
+  .toast p { margin: 0; font-size: 0.84rem; line-height: 1.45; }
+  .toast-close { margin-left: auto; background: none; border: none; color: var(--bg); opacity: 0.7; cursor: pointer; padding: 2px; flex-shrink: 0; }
+  .toast-close svg { width: 15px; height: 15px; margin: 0; color: inherit; }
+  @keyframes toast-in { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .card, .digit, .unlock-btn { transition: none; }
+    .digit, .btn, .progress-fill { transition: none; }
     .code-boxes.shake { animation: none; }
     .stamp-check { animation: none; stroke-dashoffset: 0; }
+    .toast { animation: none; }
   }
 
   @media (max-width: 380px) {
-    .card { padding: 34px 20px 28px; }
-    .digit { width: 44px; height: 54px; font-size: 1.4rem; }
+    .digit { width: 44px; height: 52px; font-size: 1.4rem; }
     .stat-num { font-size: 1.4rem; }
     .dim-tick { display: none; }
     .stat-row { justify-content: space-around; }
+    .timer-num { font-size: 1.25rem; }
   }
 </style>
 
-<div class="stage">
-  <main class="card" id="card">
-    <span class="corner-tl" aria-hidden="true"></span>
-    <span class="corner-br" aria-hidden="true"></span>
-    <span class="sheet-tag">SHEET 01 · REV A</span>
+<div class="app" id="app">
 
-    <p class="eyebrow">ATD Greater Atlanta &amp; ATD South Carolina&nbsp;·&nbsp;Oct 15–16, 2026</p>
-    <h1>Architects of a <span>Reimagined Workplace</span></h1>
-    <p class="deck">Escape Room — Blueprint Access</p>
+  <!-- ============ DASHBOARD ============ -->
+  <section class="screen" id="view-dashboard">
+    <div class="masthead">
+      <p class="eyebrow">ATD Greater Atlanta &amp; ATD South Carolina&nbsp;·&nbsp;Oct 15–16, 2026</p>
+      <h1 class="title">Architects of a <span>Reimagined Workplace</span></h1>
+      <p class="deck">The Blueprint Room — an escape room</p>
+    </div>
 
-    <section id="puzzle-view">
-      <p class="prompt">Every reimagined workplace starts with a blueprint. Study the plans below, then key in the access code to unlock the room.</p>
-
-      <div class="stat-row">
-        <div class="stat"><span class="stat-num">2</span><span class="stat-label">Energizing&nbsp;Days</span></div>
-        <div class="dim-tick" aria-hidden="true"></div>
-        <div class="stat"><span class="stat-num">9</span><span class="stat-label">Program&nbsp;Pathways</span></div>
-        <div class="dim-tick" aria-hidden="true"></div>
-        <div class="stat"><span class="stat-num">44</span><span class="stat-label">Expert&nbsp;Voices</span></div>
+    <div class="sheet timer-sheet">
+      <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
+      <p class="timer-label">Day 1 closes in</p>
+      <div class="timer-grid" id="timer-grid">
+        <div class="timer-cell"><span class="timer-num" id="t-days">—</span><span class="timer-unit">Days</span></div>
+        <div class="timer-cell"><span class="timer-num" id="t-hours">—</span><span class="timer-unit">Hrs</span></div>
+        <div class="timer-cell"><span class="timer-num" id="t-mins">—</span><span class="timer-unit">Min</span></div>
+        <div class="timer-cell"><span class="timer-num" id="t-secs">—</span><span class="timer-unit">Sec</span></div>
       </div>
+      <p class="timer-done" id="timer-done" hidden>Day 1 has wrapped — thanks for exploring the blueprint.</p>
+    </div>
 
-      <p class="instructions">Combine the three figures above, in the order shown, into one 4&#8209;digit code.</p>
-
-      <form class="code-form" id="code-form" autocomplete="off">
-        <div class="code-boxes" id="code-boxes">
-          <input class="digit" id="digit-0" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 1 of 4">
-          <input class="digit" id="digit-1" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 2 of 4">
-          <input class="digit" id="digit-2" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 3 of 4">
-          <input class="digit" id="digit-3" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 4 of 4">
-        </div>
-        <button class="unlock-btn" type="submit">
-          Unlock
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </button>
-        <p class="feedback" id="feedback" role="status" aria-live="polite">&nbsp;</p>
-      </form>
-    </section>
-
-    <section id="success-view" hidden>
-      <div class="stamp">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="stamp-check" d="M4 12.5l5 5L20 6"/></svg>
-        <span>Access<br>Granted</span>
+    <div class="sheet progress-sheet">
+      <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
+      <div class="progress-head">
+        <h2>Your progress</h2>
+        <span class="progress-count" id="progress-count">0 / 0</span>
       </div>
-      <p class="success-text">Card 01 complete — the first door into the Reimagined Workplace is open. Hold onto your key; more rooms unlock soon.</p>
-      <div class="key-line">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 3l3 3M20 4l-3 3"/></svg>
-        Key 01 acquired
-      </div>
-    </section>
-  </main>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="sheet next-sheet" id="next-sheet">
+      <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
+      <span class="tag" id="next-tag">UP NEXT</span>
+      <h2 id="next-title">—</h2>
+      <p id="next-teaser">—</p>
+      <button class="btn btn-primary" id="next-btn" type="button">
+        Open mission
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <button class="reset-link" id="reset-btn" type="button">Reset progress (for testing)</button>
+  </section>
+
+  <!-- ============ MISSION MAP ============ -->
+  <section class="screen" id="view-missions" hidden>
+    <div class="masthead">
+      <p class="eyebrow">Play in any order</p>
+      <h1 class="title">Mission Map</h1>
+    </div>
+
+    <p class="section-label">Main sequence</p>
+    <div class="mission-list" id="mission-list-main"></div>
+
+    <p class="section-label">Bonus — optional</p>
+    <div class="mission-list" id="mission-list-bonus"></div>
+  </section>
+
+  <!-- ============ MISSION DETAIL ============ -->
+  <section class="screen" id="view-mission" hidden>
+    <div class="mission-header">
+      <button class="back-btn" id="mission-back" type="button" aria-label="Back to mission map">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="tag" id="mission-tag">SHEET 01</span>
+    </div>
+    <div id="mission-body"></div>
+  </section>
+
+  <nav class="bottom-nav" aria-label="Primary">
+    <button class="nav-btn" data-nav="dashboard" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 5l8 6.5"/><path d="M6 10.5V19a1 1 0 0 0 1 1h3v-5h4v5h3a1 1 0 0 0 1-1v-8.5"/></svg>
+      Home
+    </button>
+    <button class="nav-btn" data-nav="missions" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>
+      Missions
+    </button>
+  </nav>
+
+  <div id="toast-slot"></div>
 </div>
 
 <script>
 (function () {
-  // ---- Puzzle config: future cards can follow this same shape ----
-  var PUZZLE = { code: "2944" };
+  "use strict";
 
-  var boxesEl = document.getElementById("code-boxes");
-  var digits = [0, 1, 2, 3].map(function (i) { return document.getElementById("digit-" + i); });
-  var form = document.getElementById("code-form");
-  var feedback = document.getElementById("feedback");
-  var puzzleView = document.getElementById("puzzle-view");
-  var successView = document.getElementById("success-view");
+  /* =========================================================
+     Mission registry — this is the single place to add cards.
+     type: "live" (playable now) | "soon" (visible placeholder)
+     kind: "main" | "bonus"
+     For a "live" mission, `render(bodyEl, onComplete)` builds the
+     puzzle UI into bodyEl and calls onComplete() when solved.
+     ========================================================= */
+  var MISSIONS = [
+    {
+      id: "blueprint-access",
+      num: "01",
+      kind: "main",
+      type: "live",
+      title: "Blueprint Access",
+      teaser: "Crack the 4-digit code hidden in today's numbers.",
+      render: renderBlueprintAccess
+    },
+    {
+      id: "mission-02",
+      num: "02",
+      kind: "main",
+      type: "soon",
+      title: "Sheet 02",
+      teaser: "Still on the drafting table — check back soon."
+    },
+    {
+      id: "mission-03",
+      num: "03",
+      kind: "main",
+      type: "soon",
+      title: "Sheet 03",
+      teaser: "Still on the drafting table — check back soon."
+    },
+    {
+      id: "bonus-01",
+      num: "B1",
+      kind: "bonus",
+      type: "soon",
+      title: "Side Room",
+      teaser: "An optional extra room, opening later."
+    }
+  ];
 
-  digits.forEach(function (input, i) {
-    input.addEventListener("input", function () {
-      input.value = input.value.replace(/[^0-9]/g, "").slice(0, 1);
-      if (input.value && digits[i + 1]) digits[i + 1].focus();
+  var DEADLINE = new Date("2026-10-15T17:00:00-04:00").getTime();
+  var STORAGE_KEY = "atdEscapeRoom.progress.v1";
+
+  /* ---------------- progress persistence ---------------- */
+  function loadProgress() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      var parsed = raw ? JSON.parse(raw) : null;
+      if (parsed && Array.isArray(parsed.completed)) return parsed;
+    } catch (e) { /* storage unavailable — fall through */ }
+    return { completed: [] };
+  }
+  function saveProgress(progress) {
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch (e) { /* ignore */ }
+    if (window.claude && window.claude.hot && window.claude.hot.snapshot) {
+      window.claude.hot.snapshot(progress);
+    }
+  }
+
+  var progress = loadProgress();
+  if (window.claude && window.claude.hot) {
+    var boot = window.claude.hot.data;
+    if (boot && Array.isArray(boot.completed) && boot.completed.length > progress.completed.length) {
+      progress = boot;
+    }
+  }
+
+  function isComplete(id) { return progress.completed.indexOf(id) !== -1; }
+  function markComplete(id) {
+    if (!isComplete(id)) {
+      progress.completed.push(id);
+      saveProgress(progress);
+    }
+  }
+
+  /* ---------------- routing ---------------- */
+  var views = {
+    dashboard: document.getElementById("view-dashboard"),
+    missions: document.getElementById("view-missions"),
+    mission: document.getElementById("view-mission")
+  };
+  var navBtns = Array.prototype.slice.call(document.querySelectorAll(".nav-btn"));
+
+  function showView(name) {
+    Object.keys(views).forEach(function (k) { views[k].hidden = k !== name; });
+    navBtns.forEach(function (b) {
+      var target = b.getAttribute("data-nav") === "missions" ? "missions" :
+                   (b.getAttribute("data-nav") === "dashboard" ? "dashboard" : null);
+      var active = target === name || (name === "mission" && target === "missions");
+      b.classList.toggle("is-active", !!active);
     });
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Backspace" && !input.value && digits[i - 1]) {
-        digits[i - 1].focus();
-      }
+    window.scrollTo(0, 0);
+  }
+
+  navBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      showView(b.getAttribute("data-nav"));
+      if (b.getAttribute("data-nav") === "missions") renderMissionList();
     });
   });
 
-  function currentCode() {
-    return digits.map(function (d) { return d.value; }).join("");
+  /* ---------------- dashboard ---------------- */
+  function liveMissions() { return MISSIONS.filter(function (m) { return m.type === "live"; }); }
+
+  function renderDashboard() {
+    var live = liveMissions();
+    var doneCount = live.filter(function (m) { return isComplete(m.id); }).length;
+    document.getElementById("progress-count").textContent = doneCount + " / " + live.length;
+    var pct = live.length ? Math.round((doneCount / live.length) * 100) : 0;
+    document.getElementById("progress-fill").style.width = pct + "%";
+
+    var next = live.find(function (m) { return !isComplete(m.id); });
+    var nextSheet = document.getElementById("next-sheet");
+    if (next) {
+      nextSheet.hidden = false;
+      document.getElementById("next-tag").textContent = "UP NEXT · SHEET " + next.num;
+      document.getElementById("next-title").textContent = next.title;
+      document.getElementById("next-teaser").textContent = next.teaser;
+      document.getElementById("next-btn").onclick = function () { openMission(next.id); };
+    } else {
+      nextSheet.hidden = false;
+      document.getElementById("next-tag").textContent = "ALL CAUGHT UP";
+      document.getElementById("next-title").textContent = "Every open sheet is filed";
+      document.getElementById("next-teaser").textContent = "More rooms unlock as they're built — check the mission map later.";
+      document.getElementById("next-btn").textContent = "";
+      var mapBtn = document.createElement("span");
+      mapBtn.textContent = "View mission map";
+      document.getElementById("next-btn").appendChild(mapBtn);
+      document.getElementById("next-btn").onclick = function () { showView("missions"); renderMissionList(); };
+    }
   }
 
-  function shakeAndWarn(message) {
-    feedback.textContent = message;
-    boxesEl.classList.remove("shake");
-    void boxesEl.offsetWidth;
-    boxesEl.classList.add("shake");
-    digits.forEach(function (d) { d.value = ""; });
-    digits[0].focus();
-  }
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    if (window.confirm("Clear saved progress on this device?")) {
+      progress = { completed: [] };
+      saveProgress(progress);
+      renderDashboard();
+      renderMissionList();
+    }
+  });
 
-  function unlock() {
-    puzzleView.hidden = true;
-    successView.hidden = false;
-  }
-
-  function start(data) {
-    if (data && data.solved) unlock();
-  }
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var code = currentCode();
-    if (code.length < 4) {
-      shakeAndWarn("Enter all 4 digits.");
+  /* ---------------- countdown ---------------- */
+  function tickTimer() {
+    var remaining = DEADLINE - Date.now();
+    var doneEl = document.getElementById("timer-done");
+    var gridEl = document.getElementById("timer-grid");
+    if (remaining <= 0) {
+      gridEl.hidden = true;
+      doneEl.hidden = false;
       return;
     }
-    if (code === PUZZLE.code) {
-      window.claude && window.claude.hot && window.claude.hot.snapshot && window.claude.hot.snapshot({ solved: true });
-      unlock();
+    gridEl.hidden = false;
+    doneEl.hidden = true;
+    var s = Math.floor(remaining / 1000);
+    var days = Math.floor(s / 86400);
+    var hours = Math.floor((s % 86400) / 3600);
+    var mins = Math.floor((s % 3600) / 60);
+    var secs = s % 60;
+    var pad = function (n) { return String(n).padStart(2, "0"); };
+    document.getElementById("t-days").textContent = String(days);
+    document.getElementById("t-hours").textContent = pad(hours);
+    document.getElementById("t-mins").textContent = pad(mins);
+    document.getElementById("t-secs").textContent = pad(secs);
+  }
+  tickTimer();
+  setInterval(tickTimer, 1000);
+
+  /* ---------------- mission map ---------------- */
+  function missionTile(m) {
+    var complete = m.type === "live" && isComplete(m.id);
+    var el = document.createElement(m.type === "live" ? "button" : "div");
+    el.className = "mission-tile" + (complete ? " is-complete" : "") + (m.type === "soon" ? " is-soon" : "");
+    if (m.type === "live") { el.type = "button"; el.addEventListener("click", function () { openMission(m.id); }); }
+    else { el.setAttribute("aria-disabled", "true"); }
+
+    var statusText = m.type === "soon" ? "Coming soon" : (complete ? "Complete" : "Not started");
+    el.innerHTML =
+      '<div class="mission-top">' +
+        '<span class="mission-num">SHEET ' + m.num + '</span>' +
+        '<span class="mission-status' + (complete ? " is-complete" : "") + '">' + statusText + '</span>' +
+      '</div>' +
+      '<h3>' + m.title + '</h3>' +
+      '<p>' + m.teaser + '</p>';
+    return el;
+  }
+
+  function renderMissionList() {
+    var mainWrap = document.getElementById("mission-list-main");
+    var bonusWrap = document.getElementById("mission-list-bonus");
+    mainWrap.innerHTML = "";
+    bonusWrap.innerHTML = "";
+    MISSIONS.filter(function (m) { return m.kind === "main"; }).forEach(function (m) { mainWrap.appendChild(missionTile(m)); });
+    MISSIONS.filter(function (m) { return m.kind === "bonus"; }).forEach(function (m) { bonusWrap.appendChild(missionTile(m)); });
+  }
+
+  /* ---------------- mission detail ---------------- */
+  function openMission(id) {
+    var m = MISSIONS.find(function (x) { return x.id === id; });
+    if (!m) return;
+    document.getElementById("mission-tag").textContent = "SHEET " + m.num;
+    var body = document.getElementById("mission-body");
+    body.innerHTML = "";
+    if (m.type === "live") {
+      m.render(body, function () {
+        var already = isComplete(m.id);
+        markComplete(m.id);
+        if (!already) showToast("Blueprint filed. The drafting table is one sheet lighter — the next room is already taking shape.");
+      });
     } else {
-      shakeAndWarn("Blueprint doesn't match — recheck the numbers.");
+      var soon = document.createElement("div");
+      soon.className = "sheet soon-block";
+      soon.innerHTML = '<span class="tag">DRAFT PENDING</span><p>' + m.teaser + '</p>';
+      body.appendChild(soon);
     }
+    showView("mission");
+  }
+  document.getElementById("mission-back").addEventListener("click", function () {
+    showView("missions");
+    renderMissionList();
   });
+
+  function renderBlueprintAccess(body, onComplete) {
+    var CODE = "2944";
+    body.innerHTML =
+      '<div class="sheet puzzle-sheet" id="puzzle-view">' +
+        '<span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>' +
+        '<p class="prompt">Every reimagined workplace starts with a blueprint. Study the plans below, then key in the access code to unlock the room.</p>' +
+        '<div class="stat-row">' +
+          '<div class="stat"><span class="stat-num">2</span><span class="stat-label">Energizing&nbsp;Days</span></div>' +
+          '<div class="dim-tick" aria-hidden="true"></div>' +
+          '<div class="stat"><span class="stat-num">9</span><span class="stat-label">Program&nbsp;Pathways</span></div>' +
+          '<div class="dim-tick" aria-hidden="true"></div>' +
+          '<div class="stat"><span class="stat-num">44</span><span class="stat-label">Expert&nbsp;Voices</span></div>' +
+        '</div>' +
+        '<p class="instructions">Combine the three figures above, in the order shown, into one 4&#8209;digit code.</p>' +
+        '<form class="code-form" id="code-form" autocomplete="off">' +
+          '<div class="code-boxes" id="code-boxes">' +
+            '<input class="digit" id="digit-0" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 1 of 4">' +
+            '<input class="digit" id="digit-1" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 2 of 4">' +
+            '<input class="digit" id="digit-2" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 3 of 4">' +
+            '<input class="digit" id="digit-3" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 4 of 4">' +
+          '</div>' +
+          '<button class="btn btn-primary btn-full" type="submit">Unlock ' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
+          '</button>' +
+          '<p class="feedback" id="feedback" role="status" aria-live="polite">&nbsp;</p>' +
+        '</form>' +
+      '</div>' +
+      '<div class="sheet puzzle-sheet success-block" id="success-view" hidden>' +
+        '<span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>' +
+        '<div class="stamp">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="stamp-check" d="M4 12.5l5 5L20 6"/></svg>' +
+          '<span>Access<br>Granted</span>' +
+        '</div>' +
+        '<p class="success-text">Sheet 01 complete — the first door into the Reimagined Workplace is open. Hold onto your key; more rooms unlock soon.</p>' +
+        '<div class="success-actions"><button class="btn btn-ghost btn-full" id="back-to-map" type="button">Back to mission map</button></div>' +
+      '</div>';
+
+    var puzzleView = body.querySelector("#puzzle-view");
+    var successView = body.querySelector("#success-view");
+    var boxesEl = body.querySelector("#code-boxes");
+    var digits = [0, 1, 2, 3].map(function (i) { return body.querySelector("#digit-" + i); });
+    var feedback = body.querySelector("#feedback");
+
+    function reveal() {
+      puzzleView.hidden = true;
+      successView.hidden = false;
+    }
+
+    if (isComplete("blueprint-access")) { reveal(); return; }
+
+    digits.forEach(function (input, i) {
+      input.addEventListener("input", function () {
+        input.value = input.value.replace(/[^0-9]/g, "").slice(0, 1);
+        if (input.value && digits[i + 1]) digits[i + 1].focus();
+      });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Backspace" && !input.value && digits[i - 1]) digits[i - 1].focus();
+      });
+    });
+
+    body.querySelector("#code-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var code = digits.map(function (d) { return d.value; }).join("");
+      if (code.length < 4) {
+        feedback.textContent = "Enter all 4 digits.";
+        return;
+      }
+      if (code === CODE) {
+        reveal();
+        onComplete();
+      } else {
+        feedback.textContent = "Blueprint doesn't match — recheck the numbers.";
+        boxesEl.classList.remove("shake");
+        void boxesEl.offsetWidth;
+        boxesEl.classList.add("shake");
+        digits.forEach(function (d) { d.value = ""; });
+        digits[0].focus();
+      }
+    });
+
+    body.querySelector("#back-to-map").addEventListener("click", function () {
+      showView("missions");
+      renderMissionList();
+    });
+  }
+
+  /* ---------------- toast ---------------- */
+  var toastTimer = null;
+  function showToast(message) {
+    var slot = document.getElementById("toast-slot");
+    slot.innerHTML = "";
+    var el = document.createElement("div");
+    el.className = "toast";
+    el.setAttribute("role", "status");
+    el.setAttribute("aria-live", "polite");
+    el.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>' +
+      '<p>' + message + '</p>' +
+      '<button class="toast-close" type="button" aria-label="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+    slot.appendChild(el);
+    el.querySelector(".toast-close").addEventListener("click", function () { el.remove(); });
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.remove(); }, 5000);
+  }
+
+  /* ---------------- boot ---------------- */
+  function start() {
+    renderDashboard();
+    renderMissionList();
+    showView("dashboard");
+  }
 
   if (window.claude && window.claude.hot && window.claude.hot.ready) {
     window.claude.hot.ready(start);
-  } else if (window.claude && window.claude.hot) {
-    start(window.claude.hot.data || {});
+  } else {
+    start();
   }
 })();
 </script>
