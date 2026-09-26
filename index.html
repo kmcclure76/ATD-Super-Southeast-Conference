@@ -140,6 +140,7 @@
     padding: 4px 9px;
     border-radius: 2px;
   }
+  .tag.tag-accent { background: var(--accent); color: var(--accent-ink); }
 
   .btn {
     display: inline-flex;
@@ -156,6 +157,7 @@
     border: 1.5px solid transparent;
   }
   .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: 0.5; cursor: default; transform: none; }
   .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .btn-primary:hover { filter: brightness(0.95); }
   .btn-ghost { background: transparent; color: var(--blue); border-color: var(--blue); }
@@ -203,7 +205,7 @@
     padding: 6px 0;
   }
   .timer-unit { font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); }
-  .timer-done { font-size: 0.86rem; color: var(--text-dim); margin: 4px 0 0; }
+  .timer-done, .muted-line { font-size: 0.86rem; color: var(--text-dim); margin: 4px 0 0; }
 
   .progress-sheet { padding: 18px; margin-top: 14px; }
   .progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
@@ -261,13 +263,22 @@
   .mission-tile.is-complete { border-color: var(--accent); }
   .mission-tile.is-soon { opacity: 0.62; border-style: dashed; cursor: default; }
 
-  .mission-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .mission-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .mission-top-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
   .mission-num {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-weight: 600;
     font-size: 0.78rem;
     color: var(--text-dim);
     letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .mission-points {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--blue);
+    white-space: nowrap;
   }
   .mission-status {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
@@ -280,11 +291,25 @@
     background: var(--surface-2);
     color: var(--text-dim);
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .mission-status.is-complete { background: var(--accent-soft); color: var(--accent); }
   .mission-tile h3 { margin: 8px 0 4px; font-size: 1rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
   .mission-tile p { margin: 0; font-size: 0.85rem; color: var(--text-dim); line-height: 1.45; }
+  .mission-tile .mission-note { margin-top: 4px; font-size: 0.8rem; color: var(--navy-soft); font-style: italic; }
   .mission-tile.is-soon h3, .mission-tile.is-soon .mission-num { color: var(--text-dim); }
+
+  .finale-wrap { margin-top: 26px; }
+  .finale-card {
+    padding: 20px 18px;
+    background: var(--navy);
+    color: var(--bg);
+    border-color: var(--navy);
+  }
+  .finale-card::before, .finale-card::after, .finale-card .corner-bl, .finale-card .corner-br { border-color: var(--accent); }
+  .finale-card .tag { background: var(--accent); color: var(--accent-ink); margin-bottom: 8px; }
+  .finale-card h3 { margin: 4px 0 4px; font-size: 1.1rem; font-family: "Archivo", Arial, sans-serif; font-weight: 900; }
+  .finale-card p { margin: 0 0 14px; font-size: 0.87rem; opacity: 0.85; line-height: 1.5; }
 
   /* ---------- mission detail ---------- */
   .mission-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
@@ -296,6 +321,7 @@
   }
   .back-btn svg { width: 17px; height: 17px; }
   .mission-header .tag { flex-shrink: 0; }
+  .mission-header .mission-points { margin-left: auto; }
 
   .puzzle-sheet { padding: 30px 26px 28px; }
   .prompt { margin: 0 0 20px; font-size: 0.96rem; line-height: 1.55; }
@@ -335,7 +361,7 @@
     80% { transform: translateX(4px); }
   }
 
-  .feedback { min-height: 18px; margin: 0; font-size: 0.82rem; font-weight: 500; color: var(--error); text-align: center; }
+  .feedback { min-height: 18px; margin: 8px 0 0; font-size: 0.82rem; font-weight: 500; color: var(--error); text-align: center; }
 
   .success-block { display: flex; flex-direction: column; align-items: center; text-align: center; }
   .stamp {
@@ -355,6 +381,84 @@
 
   .soon-block { padding: 30px 26px; text-align: center; }
   .soon-block p { margin: 10px 0 0; color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; }
+
+  /* ---------- text-answer challenges (knowledge / experience) ---------- */
+  .text-field, textarea.text-field, .report-box {
+    width: 100%;
+    padding: 11px 12px;
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 0.94rem;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1.5px solid var(--surface-edge);
+    border-radius: 4px;
+    outline: none;
+  }
+  textarea.report-box { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; resize: vertical; }
+  .text-field:focus, textarea:focus { border-color: var(--blue); }
+
+  /* ---------- selfie (meet & greet) missions ---------- */
+  .meet-sheet { padding: 26px 22px; }
+  .selfie-frame {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 4px;
+    border: 1.5px dashed var(--surface-edge);
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 18px 0;
+  }
+  .selfie-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .selfie-frame .placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--text-dim); padding: 16px; text-align: center; }
+  .selfie-frame .placeholder svg { width: 30px; height: 30px; }
+  .selfie-frame .placeholder span { font-size: 0.82rem; }
+  input[type="file"].visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  .field-label {
+    display: block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 4px 0 8px;
+  }
+  .meet-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+  /* ---------- finale / export ---------- */
+  .points-banner {
+    display: flex; align-items: baseline; justify-content: space-between;
+    background: var(--surface-2); border: 1.5px solid var(--surface-edge); border-radius: 4px;
+    padding: 12px 14px; margin: 0 0 18px;
+  }
+  .points-banner .num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 600; font-size: 1.3rem; color: var(--navy); font-variant-numeric: tabular-nums; }
+  .points-banner .label { font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); }
+
+  .recap-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 0; }
+  .recap-row { display: flex; align-items: flex-start; gap: 9px; font-size: 0.86rem; line-height: 1.4; }
+  .recap-row svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+  .recap-row.is-done { color: var(--text); }
+  .recap-row.is-done svg { color: var(--accent); }
+  .recap-row.is-pending { color: var(--text-dim); }
+  .recap-row.is-pending svg { color: var(--surface-edge); }
+  .recap-row b { font-weight: 600; }
+  .recap-row .pts { color: var(--blue); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.78rem; }
+
+  .collage-preview { margin-top: 18px; }
+  .collage-preview img { width: 100%; border-radius: 4px; border: 1.5px solid var(--surface-edge); display: block; }
+
+  .report-box.readout { min-height: 160px; margin-top: 14px; line-height: 1.5; }
+  .export-note { margin: 10px 0 0; font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+  .spinner {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid currentColor; border-right-color: transparent;
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ---------- bottom nav ---------- */
   .bottom-nav {
@@ -421,6 +525,7 @@
     .code-boxes.shake { animation: none; }
     .stamp-check { animation: none; stroke-dashoffset: 0; }
     .toast { animation: none; }
+    .spinner { animation: none; }
   }
 
   @media (max-width: 380px) {
@@ -457,10 +562,11 @@
     <div class="sheet progress-sheet">
       <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
       <div class="progress-head">
-        <h2>Your progress</h2>
-        <span class="progress-count" id="progress-count">0 / 0</span>
+        <h2>Your points</h2>
+        <span class="progress-count" id="progress-count">0 / 0 pts</span>
       </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <p class="muted-line" id="progress-sub">0 of 0 challenges complete</p>
     </div>
 
     <div class="sheet next-sheet" id="next-sheet">
@@ -469,7 +575,7 @@
       <h2 id="next-title">—</h2>
       <p id="next-teaser">—</p>
       <button class="btn btn-primary" id="next-btn" type="button">
-        Open mission
+        Open challenge
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
     </div>
@@ -484,11 +590,19 @@
       <h1 class="title">Mission Map</h1>
     </div>
 
-    <p class="section-label">Main sequence</p>
-    <div class="mission-list" id="mission-list-main"></div>
+    <p class="section-label">ATD Knowledge Check</p>
+    <div class="mission-list" id="mission-list-knowledge"></div>
 
-    <p class="section-label">Bonus — optional</p>
-    <div class="mission-list" id="mission-list-bonus"></div>
+    <p class="section-label">Conference Experience</p>
+    <div class="mission-list" id="mission-list-experience"></div>
+
+    <p class="section-label">Meet and Greet</p>
+    <div class="mission-list" id="mission-list-meet"></div>
+
+    <div class="finale-wrap">
+      <p class="section-label">The finale</p>
+      <div class="mission-list" id="mission-list-finale"></div>
+    </div>
   </section>
 
   <!-- ============ MISSION DETAIL ============ -->
@@ -497,7 +611,8 @@
       <button class="back-btn" id="mission-back" type="button" aria-label="Back to mission map">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
       </button>
-      <span class="tag" id="mission-tag">SHEET 01</span>
+      <span class="tag" id="mission-tag">CHALLENGE</span>
+      <span class="mission-points" id="mission-points"></span>
     </div>
     <div id="mission-body"></div>
   </section>
@@ -521,64 +636,218 @@
   "use strict";
 
   /* =========================================================
-     Mission registry — this is the single place to add cards.
-     type: "live" (playable now) | "soon" (visible placeholder)
-     kind: "main" | "bonus"
-     For a "live" mission, `render(bodyEl, onComplete)` builds the
-     puzzle UI into bodyEl and calls onComplete() when solved.
+     ANSWER KEYS — edit these as real event details are locked in.
+     ========================================================= */
+  // TODO(Susan): replace with the real master list of vendor booth
+  // codes before the event. Players need to enter at least
+  // VENDOR_CODES_REQUIRED of these (any of them, any order).
+  var VALID_VENDOR_CODES = [
+    "ALPHA1", "ALPHA2", "ALPHA3", "ALPHA4", "ALPHA5", "ALPHA6",
+    "ALPHA7", "ALPHA8", "ALPHA9", "ALPHA10", "ALPHA11", "ALPHA12"
+  ];
+  var VENDOR_CODES_REQUIRED = 8;
+
+  // TODO(Susan): replace with the real Golden Egg vendor name.
+  var GOLDEN_EGG_VENDOR = "REPLACE ME";
+
+  var DEADLINE = new Date("2026-10-15T17:00:00-04:00").getTime();
+  var STORAGE_KEY = "atdEscapeRoom.progress.v2";
+  var EVENT_LABEL = "ATD Super Southeast Conference — The Blueprint Room";
+
+  /* =========================================================
+     Mission registry — this is the single place to add or edit
+     challenges. Each mission:
+       id        stable key (never rename once people have progress)
+       tag       short label shown as the challenge's badge
+       kind      "knowledge" | "experience" | "meet" — which mission
+                 map section it lives in
+       type      "live" (playable now) | "soon" (visible placeholder)
+       points    added to the running total when completed
+       isFinale  true marks the single capstone export mission —
+                 excluded from points/progress and the "up next" card
+       render(bodyEl, onComplete) builds the challenge UI into bodyEl;
+       onComplete(note) marks it done and stores an optional note
+       (their answer/who they met) that shows up in the final recap.
      ========================================================= */
   var MISSIONS = [
+    // ---- ATD Knowledge Check ----
     {
       id: "blueprint-access",
-      num: "01",
-      kind: "main",
+      tag: "WARM-UP",
+      kind: "knowledge",
       type: "live",
+      points: 10,
       title: "Blueprint Access",
       teaser: "Crack the 4-digit code hidden in today's numbers.",
       render: renderBlueprintAccess
     },
     {
-      id: "mission-02",
-      num: "02",
-      kind: "main",
-      type: "soon",
-      title: "Sheet 02",
-      teaser: "Still on the drafting table — check back soon."
+      id: "knowledge-capability-model",
+      tag: "CHALLENGE 1",
+      kind: "knowledge",
+      type: "live",
+      points: 15,
+      title: "ATD Capability Model",
+      teaser: "List the three capabilities in the ATD Capability Model.",
+      render: makeKeywordMission({
+        id: "knowledge-capability-model",
+        prompt: "List the three capabilities in the ATD Talent Development Capability Model.",
+        placeholder: "e.g. Personal, Professional, Organizational…",
+        multiline: true,
+        checkFn: function (text) { return containsAllKeywords(text, ["personal", "professional", "organizational"]); },
+        wrongText: "Not quite — think in terms of Personal, Professional, and Organizational capability.",
+        successText: "Correct — Building Personal Capability, Developing Professional Capability, and Impacting Organizational Capability."
+      })
     },
     {
-      id: "mission-03",
-      num: "03",
-      kind: "main",
-      type: "soon",
-      title: "Sheet 03",
-      teaser: "Still on the drafting table — check back soon."
+      id: "knowledge-certifications",
+      tag: "CHALLENGE 2",
+      kind: "knowledge",
+      type: "live",
+      points: 15,
+      title: "Certifications",
+      teaser: "Name the two certifications ATD offers.",
+      render: makeKeywordMission({
+        id: "knowledge-certifications",
+        prompt: "What are the names of the two certifications offered by the Association for Talent Development?",
+        placeholder: "e.g. APTD and CPTD",
+        checkFn: function (text) { return containsAllKeywords(text, ["aptd", "cptd"]); },
+        wrongText: "Not quite — both are three-letter certifications from ATD.",
+        successText: "Correct — APTD (Associate Professional in Talent Development) and CPTD (Certified Professional in Talent Development)."
+      })
+    },
+
+    // ---- Conference Experience ----
+    {
+      id: "exp-sessions-attended",
+      tag: "CHALLENGE 1",
+      kind: "experience",
+      type: "live",
+      points: 10,
+      title: "Speaker Activity One",
+      teaser: "Enter the names of the sessions you attended on Day 1.",
+      render: makeSelfReportMission({
+        id: "exp-sessions-attended",
+        prompt: "Enter the names of the sessions that you attended on day one of the conference.",
+        placeholder: "e.g. Opening Keynote, Coaching as a Strategic Leadership Advantage…",
+        successText: "Saved — this will be included in your final Escape Room submission."
+      })
     },
     {
-      id: "bonus-01",
-      num: "B1",
-      kind: "bonus",
-      type: "soon",
-      title: "Side Room",
-      teaser: "An optional extra room, opening later."
+      id: "exp-vendor-codes",
+      tag: "CHALLENGE 2",
+      kind: "experience",
+      type: "live",
+      points: 25,
+      title: "Vendor Expo Activity Three",
+      teaser: "Enter the codes for eight vendor booths you visited.",
+      render: makeVendorCodesMission({
+        id: "exp-vendor-codes",
+        prompt: "Enter the codes for eight of the vendors whose booths you visited.",
+        validCodes: VALID_VENDOR_CODES,
+        required: VENDOR_CODES_REQUIRED,
+        successText: "Verified — nice lap around the expo hall."
+      })
+    },
+    {
+      id: "exp-golden-egg",
+      tag: "CHALLENGE 3",
+      kind: "experience",
+      type: "live",
+      points: 20,
+      title: "Vendor Expo Activity Four",
+      teaser: "Find the vendor with the Golden Egg.",
+      render: makeKeywordMission({
+        id: "exp-golden-egg",
+        prompt: "Enter the vendor with the Golden Egg.",
+        placeholder: "Vendor name",
+        checkFn: function (text) { return answersMatch(text, GOLDEN_EGG_VENDOR); },
+        wrongText: "Not the Golden Egg vendor — keep exploring the expo hall.",
+        successText: "You found it — the Golden Egg vendor!"
+      })
+    },
+
+    // ---- Meet and Greet ----
+    {
+      id: "meet-speaker",
+      tag: "CHALLENGE 1",
+      kind: "meet",
+      type: "live",
+      points: 15,
+      title: "Speaker Activity Two",
+      teaser: "Take a selfie with one of the speakers.",
+      render: makeMeetRenderer("meet-speaker", "one of the speakers")
+    },
+    {
+      id: "meet-board",
+      tag: "CHALLENGE 2",
+      kind: "meet",
+      type: "live",
+      points: 15,
+      title: "Board Member Activity",
+      teaser: "Take a selfie with an Atlanta or South Carolina board member.",
+      render: makeMeetRenderer("meet-board", "an Atlanta or South Carolina board member")
+    },
+    {
+      id: "meet-sister-chapter",
+      tag: "CHALLENGE 3",
+      kind: "meet",
+      type: "live",
+      points: 15,
+      title: "Sister Chapter Member Activity",
+      teaser: "Take a selfie with a sister chapter member.",
+      render: makeMeetRenderer("meet-sister-chapter", "a sister chapter member")
+    },
+    {
+      id: "meet-vendor",
+      tag: "CHALLENGE 4",
+      kind: "meet",
+      type: "live",
+      points: 15,
+      title: "Vendor Expo Activity",
+      teaser: "Take a selfie with a vendor.",
+      render: makeMeetRenderer("meet-vendor", "a vendor")
+    },
+    {
+      id: "meet-sponsor",
+      tag: "CHALLENGE 5",
+      kind: "meet",
+      type: "live",
+      points: 15,
+      title: "Sponsor Activity",
+      teaser: "Take a selfie with a conference sponsor.",
+      render: makeMeetRenderer("meet-sponsor", "a conference sponsor")
+    },
+
+    // ---- Finale ----
+    {
+      id: "final-recap",
+      tag: "FINAL",
+      kind: "finale",
+      type: "live",
+      isFinale: true,
+      title: "Compile Your Blueprint",
+      teaser: "Build your selfie collage and final submission, then send it in.",
+      render: renderFinale
     }
   ];
 
-  var DEADLINE = new Date("2026-10-15T17:00:00-04:00").getTime();
-  var STORAGE_KEY = "atdEscapeRoom.progress.v1";
-
-  /* ---------------- progress persistence ---------------- */
+  /* ---------------- progress persistence (localStorage) ---------------- */
   function loadProgress() {
     try {
       var raw = window.localStorage.getItem(STORAGE_KEY);
       var parsed = raw ? JSON.parse(raw) : null;
-      if (parsed && Array.isArray(parsed.completed)) return parsed;
+      if (parsed && Array.isArray(parsed.completed)) {
+        if (!parsed.notes) parsed.notes = {};
+        return parsed;
+      }
     } catch (e) { /* storage unavailable — fall through */ }
-    return { completed: [] };
+    return { completed: [], notes: {} };
   }
-  function saveProgress(progress) {
-    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch (e) { /* ignore */ }
+  function saveProgress(p) {
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch (e) { /* ignore */ }
     if (window.claude && window.claude.hot && window.claude.hot.snapshot) {
-      window.claude.hot.snapshot(progress);
+      window.claude.hot.snapshot(p);
     }
   }
 
@@ -587,15 +856,74 @@
     var boot = window.claude.hot.data;
     if (boot && Array.isArray(boot.completed) && boot.completed.length > progress.completed.length) {
       progress = boot;
+      if (!progress.notes) progress.notes = {};
     }
   }
 
   function isComplete(id) { return progress.completed.indexOf(id) !== -1; }
-  function markComplete(id) {
-    if (!isComplete(id)) {
-      progress.completed.push(id);
-      saveProgress(progress);
-    }
+  function markComplete(id, note) {
+    if (!isComplete(id)) progress.completed.push(id);
+    if (typeof note === "string") progress.notes[id] = note;
+    saveProgress(progress);
+  }
+
+  /* ---------------- answer-checking helpers ---------------- */
+  function normalizeAnswer(s) {
+    return String(s || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function containsAllKeywords(text, keywords) {
+    var norm = normalizeAnswer(text);
+    return keywords.every(function (k) { return norm.indexOf(k) !== -1; });
+  }
+  function answersMatch(a, b) {
+    var na = normalizeAnswer(a), nb = normalizeAnswer(b);
+    if (!na || !nb) return false;
+    return na === nb || na.indexOf(nb) !== -1 || nb.indexOf(na) !== -1;
+  }
+  function parseCodes(raw) {
+    return String(raw || "").split(/[\s,]+/).map(function (s) { return s.trim().toUpperCase(); }).filter(Boolean);
+  }
+
+  /* ---------------- selfie photo storage (IndexedDB, falls back to memory) ----------------
+     Photos are binary and can be sizeable, so they live separately from the
+     small JSON progress blob above. IndexedDB persists them across the whole
+     day (tab closes, phone locks); if it's unavailable we fall back to an
+     in-memory map that only lasts the current page load. */
+  var DB_NAME = "atdEscapeRoomPhotos";
+  var DB_STORE = "selfies";
+  var memoryPhotos = {};
+  var hasIDB = "indexedDB" in window;
+
+  function openPhotoDB() {
+    return new Promise(function (resolve, reject) {
+      if (!hasIDB) { reject(new Error("no-idb")); return; }
+      var req = window.indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = function () { req.result.createObjectStore(DB_STORE); };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error); };
+    });
+  }
+  function savePhotoBlob(id, blob) {
+    if (!hasIDB) { memoryPhotos[id] = blob; return Promise.resolve(); }
+    return openPhotoDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(DB_STORE, "readwrite");
+        tx.objectStore(DB_STORE).put(blob, id);
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    }).catch(function () { memoryPhotos[id] = blob; });
+  }
+  function getPhotoBlob(id) {
+    if (!hasIDB) return Promise.resolve(memoryPhotos[id] || null);
+    return openPhotoDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(DB_STORE, "readonly");
+        var req = tx.objectStore(DB_STORE).get(id);
+        req.onsuccess = function () { resolve(req.result || null); };
+        req.onerror = function () { reject(req.error); };
+      });
+    }).catch(function () { return memoryPhotos[id] || null; });
   }
 
   /* ---------------- routing ---------------- */
@@ -624,41 +952,58 @@
     });
   });
 
-  /* ---------------- dashboard ---------------- */
-  function liveMissions() { return MISSIONS.filter(function (m) { return m.type === "live"; }); }
+  /* ---------------- points + dashboard ---------------- */
+  function countableMissions() {
+    return MISSIONS.filter(function (m) { return m.type === "live" && !m.isFinale; });
+  }
+  function totalPoints() {
+    return countableMissions().reduce(function (sum, m) { return sum + (m.points || 0); }, 0);
+  }
+  function earnedPoints() {
+    return countableMissions().filter(function (m) { return isComplete(m.id); })
+      .reduce(function (sum, m) { return sum + (m.points || 0); }, 0);
+  }
 
   function renderDashboard() {
-    var live = liveMissions();
+    var live = countableMissions();
     var doneCount = live.filter(function (m) { return isComplete(m.id); }).length;
-    document.getElementById("progress-count").textContent = doneCount + " / " + live.length;
-    var pct = live.length ? Math.round((doneCount / live.length) * 100) : 0;
+    var earned = earnedPoints(), total = totalPoints();
+    document.getElementById("progress-count").textContent = earned + " / " + total + " pts";
+    document.getElementById("progress-sub").textContent = doneCount + " of " + live.length + " challenges complete";
+    var pct = total ? Math.round((earned / total) * 100) : 0;
     document.getElementById("progress-fill").style.width = pct + "%";
 
     var next = live.find(function (m) { return !isComplete(m.id); });
     var nextSheet = document.getElementById("next-sheet");
+    nextSheet.hidden = false;
     if (next) {
-      nextSheet.hidden = false;
-      document.getElementById("next-tag").textContent = "UP NEXT · SHEET " + next.num;
+      document.getElementById("next-tag").textContent = next.tag + " · +" + next.points + " PTS";
       document.getElementById("next-title").textContent = next.title;
       document.getElementById("next-teaser").textContent = next.teaser;
-      document.getElementById("next-btn").onclick = function () { openMission(next.id); };
+      var btn = document.getElementById("next-btn");
+      btn.innerHTML = 'Open challenge <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+      btn.onclick = function () { openMission(next.id); };
     } else {
-      nextSheet.hidden = false;
       document.getElementById("next-tag").textContent = "ALL CAUGHT UP";
-      document.getElementById("next-title").textContent = "Every open sheet is filed";
-      document.getElementById("next-teaser").textContent = "More rooms unlock as they're built — check the mission map later.";
-      document.getElementById("next-btn").textContent = "";
-      var mapBtn = document.createElement("span");
-      mapBtn.textContent = "View mission map";
-      document.getElementById("next-btn").appendChild(mapBtn);
-      document.getElementById("next-btn").onclick = function () { showView("missions"); renderMissionList(); };
+      document.getElementById("next-title").textContent = "Every challenge is filed";
+      document.getElementById("next-teaser").textContent = "Head to the finale to compile your blueprint and send in your submission.";
+      var btn2 = document.getElementById("next-btn");
+      btn2.textContent = "Go to finale";
+      btn2.onclick = function () { openMission("final-recap"); };
     }
   }
 
   document.getElementById("reset-btn").addEventListener("click", function () {
-    if (window.confirm("Clear saved progress on this device?")) {
-      progress = { completed: [] };
+    if (window.confirm("Clear saved progress and selfies on this device?")) {
+      progress = { completed: [], notes: {} };
       saveProgress(progress);
+      memoryPhotos = {};
+      if (hasIDB) {
+        openPhotoDB().then(function (db) {
+          var tx = db.transaction(DB_STORE, "readwrite");
+          tx.objectStore(DB_STORE).clear();
+        }).catch(function () {});
+      }
       renderDashboard();
       renderMissionList();
     }
@@ -694,42 +1039,57 @@
   function missionTile(m) {
     var complete = m.type === "live" && isComplete(m.id);
     var el = document.createElement(m.type === "live" ? "button" : "div");
-    el.className = "mission-tile" + (complete ? " is-complete" : "") + (m.type === "soon" ? " is-soon" : "");
+    el.className = "mission-tile" + (complete ? " is-complete" : "") + (m.type === "soon" ? " is-soon" : "") + (m.isFinale ? " finale-card" : "");
     if (m.type === "live") { el.type = "button"; el.addEventListener("click", function () { openMission(m.id); }); }
     else { el.setAttribute("aria-disabled", "true"); }
 
-    var statusText = m.type === "soon" ? "Coming soon" : (complete ? "Complete" : "Not started");
+    var statusText = m.type === "soon" ? "Coming soon" : (m.isFinale ? "Ready anytime" : (complete ? "Complete" : "Not started"));
+    var noteLine = "";
+    if (complete && progress.notes[m.id]) {
+      var noteLabel = m.kind === "meet" ? "Met: " : "Answer: ";
+      noteLine = '<p class="mission-note">' + noteLabel + escapeHtml(progress.notes[m.id]) + '</p>';
+    }
+    var pointsBadge = m.points ? '<span class="mission-points">+' + m.points + ' pts</span>' : "";
     el.innerHTML =
       '<div class="mission-top">' +
-        '<span class="mission-num">SHEET ' + m.num + '</span>' +
+        '<div class="mission-top-left">' +
+          '<span class="mission-num">' + m.tag + '</span>' + pointsBadge +
+        '</div>' +
         '<span class="mission-status' + (complete ? " is-complete" : "") + '">' + statusText + '</span>' +
       '</div>' +
       '<h3>' + m.title + '</h3>' +
-      '<p>' + m.teaser + '</p>';
+      '<p>' + m.teaser + '</p>' + noteLine;
     return el;
   }
 
   function renderMissionList() {
-    var mainWrap = document.getElementById("mission-list-main");
-    var bonusWrap = document.getElementById("mission-list-bonus");
-    mainWrap.innerHTML = "";
-    bonusWrap.innerHTML = "";
-    MISSIONS.filter(function (m) { return m.kind === "main"; }).forEach(function (m) { mainWrap.appendChild(missionTile(m)); });
-    MISSIONS.filter(function (m) { return m.kind === "bonus"; }).forEach(function (m) { bonusWrap.appendChild(missionTile(m)); });
+    var lists = {
+      knowledge: document.getElementById("mission-list-knowledge"),
+      experience: document.getElementById("mission-list-experience"),
+      meet: document.getElementById("mission-list-meet"),
+      finale: document.getElementById("mission-list-finale")
+    };
+    Object.keys(lists).forEach(function (k) { lists[k].innerHTML = ""; });
+    MISSIONS.forEach(function (m) {
+      var key = m.isFinale ? "finale" : m.kind;
+      if (lists[key]) lists[key].appendChild(missionTile(m));
+    });
   }
 
   /* ---------------- mission detail ---------------- */
   function openMission(id) {
     var m = MISSIONS.find(function (x) { return x.id === id; });
     if (!m) return;
-    document.getElementById("mission-tag").textContent = "SHEET " + m.num;
+    document.getElementById("mission-tag").textContent = m.tag;
+    document.getElementById("mission-points").textContent = m.points ? "+" + m.points + " pts" : "";
     var body = document.getElementById("mission-body");
     body.innerHTML = "";
     if (m.type === "live") {
-      m.render(body, function () {
+      m.render(body, function (note) {
         var already = isComplete(m.id);
-        markComplete(m.id);
-        if (!already) showToast("Blueprint filed. The drafting table is one sheet lighter — the next room is already taking shape.");
+        markComplete(m.id, note);
+        renderDashboard();
+        if (!already && !m.isFinale) showToast("Filed. +" + m.points + " pts — the drafting table is one sheet lighter.");
       });
     } else {
       var soon = document.createElement("div");
@@ -744,11 +1104,24 @@
     renderMissionList();
   });
 
+  function escapeHtml(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+  function cornerMarkup() {
+    return '<span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>';
+  }
+  function stampMarkup(label) {
+    return '<div class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="stamp-check" d="M4 12.5l5 5L20 6"/></svg><span>' + escapeHtml(label || "Complete") + '</span></div>';
+  }
+
+  /* ---------------- Warm-up: Blueprint Access ---------------- */
   function renderBlueprintAccess(body, onComplete) {
     var CODE = "2944";
     body.innerHTML =
       '<div class="sheet puzzle-sheet" id="puzzle-view">' +
-        '<span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>' +
+        cornerMarkup() +
         '<p class="prompt">Every reimagined workplace starts with a blueprint. Study the plans below, then key in the access code to unlock the room.</p>' +
         '<div class="stat-row">' +
           '<div class="stat"><span class="stat-num">2</span><span class="stat-label">Energizing&nbsp;Days</span></div>' +
@@ -772,12 +1145,9 @@
         '</form>' +
       '</div>' +
       '<div class="sheet puzzle-sheet success-block" id="success-view" hidden>' +
-        '<span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>' +
-        '<div class="stamp">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path class="stamp-check" d="M4 12.5l5 5L20 6"/></svg>' +
-          '<span>Access<br>Granted</span>' +
-        '</div>' +
-        '<p class="success-text">Sheet 01 complete — the first door into the Reimagined Workplace is open. Hold onto your key; more rooms unlock soon.</p>' +
+        cornerMarkup() +
+        stampMarkup("Access Granted") +
+        '<p class="success-text">Warm-up complete — the first door into the Reimagined Workplace is open.</p>' +
         '<div class="success-actions"><button class="btn btn-ghost btn-full" id="back-to-map" type="button">Back to mission map</button></div>' +
       '</div>';
 
@@ -828,6 +1198,424 @@
       showView("missions");
       renderMissionList();
     });
+  }
+
+  /* ---------------- Knowledge/experience: checked free-text answer ---------------- */
+  function makeKeywordMission(cfg) { return function (body, onComplete) { renderKeywordCheck(body, onComplete, cfg); }; }
+
+  function renderKeywordCheck(body, onComplete, cfg) {
+    var already = isComplete(cfg.id);
+    body.innerHTML =
+      '<div class="sheet puzzle-sheet" id="qa-view"' + (already ? ' hidden' : '') + '>' +
+        cornerMarkup() +
+        '<p class="prompt">' + escapeHtml(cfg.prompt) + '</p>' +
+        (cfg.multiline
+          ? '<textarea class="text-field" id="qa-input" placeholder="' + escapeHtml(cfg.placeholder || "") + '" style="min-height:100px"></textarea>'
+          : '<input type="text" class="text-field" id="qa-input" placeholder="' + escapeHtml(cfg.placeholder || "") + '">') +
+        '<div class="meet-actions">' +
+          '<button class="btn btn-primary btn-full" type="button" id="qa-submit">Check answer</button>' +
+        '</div>' +
+        '<p class="feedback" id="qa-feedback">&nbsp;</p>' +
+      '</div>' +
+      '<div class="sheet puzzle-sheet success-block" id="qa-success"' + (already ? '' : ' hidden') + '>' +
+        cornerMarkup() +
+        stampMarkup("Correct") +
+        '<p class="success-text">' + escapeHtml(cfg.successText || "Nice work — challenge complete.") + '</p>' +
+        '<div class="success-actions"><button class="btn btn-ghost btn-full" id="qa-back" type="button">Back to mission map</button></div>' +
+      '</div>';
+
+    var qaView = body.querySelector("#qa-view");
+    var qaSuccess = body.querySelector("#qa-success");
+    var input = body.querySelector("#qa-input");
+    var feedback = body.querySelector("#qa-feedback");
+    if (already && progress.notes[cfg.id]) input.value = progress.notes[cfg.id];
+
+    body.querySelector("#qa-submit").addEventListener("click", function () {
+      var raw = input.value.trim();
+      if (!raw) { feedback.textContent = "Enter an answer first."; return; }
+      if (cfg.checkFn(raw)) {
+        qaView.hidden = true;
+        qaSuccess.hidden = false;
+        onComplete(raw);
+      } else {
+        feedback.textContent = cfg.wrongText || "Not quite — take another look and try again.";
+      }
+    });
+    body.querySelector("#qa-back").addEventListener("click", function () {
+      showView("missions");
+      renderMissionList();
+    });
+  }
+
+  /* ---------------- Experience: self-reported free text (no auto-check) ---------------- */
+  function makeSelfReportMission(cfg) { return function (body, onComplete) { renderSelfReport(body, onComplete, cfg); }; }
+
+  function renderSelfReport(body, onComplete, cfg) {
+    var already = isComplete(cfg.id);
+    body.innerHTML =
+      '<div class="sheet puzzle-sheet" id="sr-view"' + (already ? ' hidden' : '') + '>' +
+        cornerMarkup() +
+        '<p class="prompt">' + escapeHtml(cfg.prompt) + '</p>' +
+        '<textarea class="text-field" id="sr-input" placeholder="' + escapeHtml(cfg.placeholder || "") + '" style="min-height:110px"></textarea>' +
+        '<div class="meet-actions">' +
+          '<button class="btn btn-primary btn-full" type="button" id="sr-submit">Save answer</button>' +
+        '</div>' +
+        '<p class="feedback" id="sr-feedback">&nbsp;</p>' +
+      '</div>' +
+      '<div class="sheet puzzle-sheet success-block" id="sr-success"' + (already ? '' : ' hidden') + '>' +
+        cornerMarkup() +
+        stampMarkup("Saved") +
+        '<p class="success-text">' + escapeHtml(cfg.successText || "Saved — it'll be included in your final recap.") + '</p>' +
+        '<div class="success-actions"><button class="btn btn-ghost btn-full" id="sr-back" type="button">Back to mission map</button></div>' +
+      '</div>';
+
+    var srView = body.querySelector("#sr-view");
+    var srSuccess = body.querySelector("#sr-success");
+    var input = body.querySelector("#sr-input");
+    var feedback = body.querySelector("#sr-feedback");
+    if (already && progress.notes[cfg.id]) input.value = progress.notes[cfg.id];
+
+    body.querySelector("#sr-submit").addEventListener("click", function () {
+      var raw = input.value.trim();
+      if (!raw) { feedback.textContent = "Enter an answer before saving."; return; }
+      srView.hidden = true;
+      srSuccess.hidden = false;
+      onComplete(raw);
+    });
+    body.querySelector("#sr-back").addEventListener("click", function () {
+      showView("missions");
+      renderMissionList();
+    });
+  }
+
+  /* ---------------- Experience: vendor booth codes (N-of-M check) ---------------- */
+  function makeVendorCodesMission(cfg) { return function (body, onComplete) { renderVendorCodes(body, onComplete, cfg); }; }
+
+  function renderVendorCodes(body, onComplete, cfg) {
+    var already = isComplete(cfg.id);
+    body.innerHTML =
+      '<div class="sheet puzzle-sheet" id="vc-view"' + (already ? ' hidden' : '') + '>' +
+        cornerMarkup() +
+        '<p class="prompt">' + escapeHtml(cfg.prompt) + '</p>' +
+        '<p class="instructions">Separate codes with commas, spaces, or new lines. You need at least ' + cfg.required + ' valid codes.</p>' +
+        '<textarea class="text-field" id="vc-input" placeholder="e.g. ALPHA1, ALPHA2, ALPHA3 …" style="min-height:110px"></textarea>' +
+        '<div class="meet-actions">' +
+          '<button class="btn btn-primary btn-full" type="button" id="vc-submit">Check codes</button>' +
+        '</div>' +
+        '<p class="feedback" id="vc-feedback">&nbsp;</p>' +
+      '</div>' +
+      '<div class="sheet puzzle-sheet success-block" id="vc-success"' + (already ? '' : ' hidden') + '>' +
+        cornerMarkup() +
+        stampMarkup("Verified") +
+        '<p class="success-text">' + escapeHtml(cfg.successText || "Verified.") + '</p>' +
+        '<div class="success-actions"><button class="btn btn-ghost btn-full" id="vc-back" type="button">Back to mission map</button></div>' +
+      '</div>';
+
+    var vcView = body.querySelector("#vc-view");
+    var vcSuccess = body.querySelector("#vc-success");
+    var input = body.querySelector("#vc-input");
+    var feedback = body.querySelector("#vc-feedback");
+    if (already && progress.notes[cfg.id]) input.value = progress.notes[cfg.id];
+
+    body.querySelector("#vc-submit").addEventListener("click", function () {
+      var raw = input.value.trim();
+      if (!raw) { feedback.textContent = "Enter the codes you collected first."; return; }
+      var entered = parseCodes(raw);
+      var validSet = {};
+      cfg.validCodes.forEach(function (c) { validSet[c.toUpperCase()] = true; });
+      var uniqueValid = [];
+      entered.forEach(function (c) { if (validSet[c] && uniqueValid.indexOf(c) === -1) uniqueValid.push(c); });
+      if (uniqueValid.length >= cfg.required) {
+        vcView.hidden = true;
+        vcSuccess.hidden = false;
+        onComplete(raw);
+      } else {
+        feedback.textContent = "Found " + uniqueValid.length + " of " + cfg.required + " valid codes so far — keep looking!";
+      }
+    });
+    body.querySelector("#vc-back").addEventListener("click", function () {
+      showView("missions");
+      renderMissionList();
+    });
+  }
+
+  /* ---------------- Meet & Greet missions (shared renderer) ---------------- */
+  var MEET_ORDER = ["meet-speaker", "meet-board", "meet-sister-chapter", "meet-vendor", "meet-sponsor"];
+
+  function makeMeetRenderer(id, meetLabel) {
+    return function (body, onComplete) {
+      body.innerHTML =
+        '<div class="sheet meet-sheet">' +
+          cornerMarkup() +
+          '<p class="prompt">Find ' + meetLabel + ' and snap a selfie together to prove the connection.</p>' +
+          '<div class="selfie-frame" id="selfie-frame">' +
+            '<div class="placeholder">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M9 6l1-2h4l1 2"/></svg>' +
+              '<span>No photo yet</span>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn btn-ghost btn-full" type="button" id="pick-btn">Take or choose a photo</button>' +
+          '<input type="file" accept="image/*" class="visually-hidden" id="file-input">' +
+          '<label class="field-label" for="note-input">Who’d you meet? (optional)</label>' +
+          '<input type="text" class="text-field" id="note-input" placeholder="e.g. Jane Doe" maxlength="60">' +
+          '<div class="meet-actions">' +
+            '<button class="btn btn-primary btn-full" type="button" id="save-btn" disabled>Save selfie</button>' +
+          '</div>' +
+        '</div>';
+
+      var frame = body.querySelector("#selfie-frame");
+      var fileInput = body.querySelector("#file-input");
+      var pickBtn = body.querySelector("#pick-btn");
+      var noteInput = body.querySelector("#note-input");
+      var saveBtn = body.querySelector("#save-btn");
+      var pendingBlob = null;
+      var pendingUrl = null;
+
+      function showPreview(url) {
+        frame.innerHTML = '<img src="' + url + '" alt="Selfie preview">';
+      }
+
+      getPhotoBlob(id).then(function (blob) {
+        if (blob) {
+          pendingUrl = URL.createObjectURL(blob);
+          showPreview(pendingUrl);
+        }
+      });
+      if (isComplete(id) && progress.notes[id]) noteInput.value = progress.notes[id];
+      if (isComplete(id)) {
+        saveBtn.textContent = "Update selfie";
+        saveBtn.disabled = false;
+        pickBtn.textContent = "Retake photo";
+      }
+
+      pickBtn.addEventListener("click", function () { fileInput.click(); });
+      fileInput.addEventListener("change", function () {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        pendingBlob = file;
+        if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+        pendingUrl = URL.createObjectURL(file);
+        showPreview(pendingUrl);
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save selfie";
+      });
+
+      saveBtn.addEventListener("click", function () {
+        var note = noteInput.value.trim();
+        var finish = function () {
+          onComplete(note);
+          showToast("Selfie saved" + (note ? " with " + note : "") + ". On to the next connection!");
+          saveBtn.textContent = "Update selfie";
+        };
+        if (pendingBlob) {
+          savePhotoBlob(id, pendingBlob).then(finish);
+        } else {
+          finish();
+        }
+      });
+    };
+  }
+
+  /* ---------------- Finale: compile + share ---------------- */
+  function reportableMissions() {
+    return MISSIONS.filter(function (m) { return m.type === "live" && !m.isFinale; });
+  }
+
+  function buildReportText() {
+    var earned = earnedPoints(), total = totalPoints();
+    var lines = [EVENT_LABEL, "My Escape Room Submission", ""];
+    reportableMissions().forEach(function (m) {
+      var done = isComplete(m.id);
+      var mark = done ? "[x]" : "[ ]";
+      var note = progress.notes[m.id] ? " — " + progress.notes[m.id] : "";
+      lines.push(mark + " " + m.tag + " (" + m.points + " pts): " + m.title + note);
+    });
+    lines.push("");
+    lines.push("Points: " + earned + " of " + total + ".");
+    lines.push("However many you gathered, you've escaped the Blueprint Room!");
+    return lines.join("\n");
+  }
+
+  function loadCollagePhotos() {
+    return Promise.all(MEET_ORDER.map(function (id) {
+      return getPhotoBlob(id).then(function (blob) { return blob ? { id: id, blob: blob } : null; });
+    })).then(function (list) { return list.filter(Boolean); });
+  }
+
+  function buildCollageBlob(photos) {
+    var cols = photos.length <= 1 ? 1 : (photos.length === 2 ? 2 : (photos.length <= 4 ? 2 : 3));
+    var rows = Math.ceil(photos.length / cols);
+    var cell = 320, gap = 8, footer = 64, pad = 10;
+    var w = pad * 2 + cols * cell + (cols - 1) * gap;
+    var h = pad * 2 + rows * cell + (rows - 1) * gap + footer;
+    var canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#eaf0f6";
+    ctx.fillRect(0, 0, w, h);
+
+    return Promise.all(photos.map(function (p) { return createImageBitmap(p.blob); }))
+      .then(function (bitmaps) {
+        bitmaps.forEach(function (bmp, i) {
+          var col = i % cols, row = Math.floor(i / cols);
+          var x = pad + col * (cell + gap), y = pad + row * (cell + gap);
+          var scale = Math.max(cell / bmp.width, cell / bmp.height);
+          var sw = cell / scale, sh = cell / scale;
+          var sx = (bmp.width - sw) / 2, sy = (bmp.height - sh) / 2;
+          ctx.drawImage(bmp, sx, sy, sw, sh, x, y, cell, cell);
+          ctx.strokeStyle = "#003b63";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(x, y, cell, cell);
+        });
+        var readyFonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+        return readyFonts;
+      })
+      .then(function () {
+        ctx.fillStyle = "#003b63";
+        ctx.fillRect(0, h - footer, w, footer);
+        ctx.fillStyle = "#eaf0f6";
+        ctx.font = "700 20px Archivo, Arial, sans-serif";
+        ctx.textBaseline = "middle";
+        ctx.fillText("The Blueprint Room · " + earnedPoints() + "/" + totalPoints() + " pts", pad, h - footer / 2);
+        return new Promise(function (resolve) { canvas.toBlob(resolve, "image/png"); });
+      });
+  }
+
+  function renderFinale(body) {
+    var earned = earnedPoints(), total = totalPoints();
+    body.innerHTML =
+      '<div class="sheet meet-sheet">' +
+        cornerMarkup() +
+        '<p class="prompt">This pulls together every selfie and answer you’ve submitted into one recap, ready to send in as your final Escape Room submission.</p>' +
+        '<div class="points-banner"><span class="label">Points collected</span><span class="num">' + earned + ' / ' + total + '</span></div>' +
+        '<div class="recap-list" id="recap-list"></div>' +
+        '<div class="meet-actions">' +
+          '<button class="btn btn-primary btn-full" type="button" id="build-btn">Build my recap</button>' +
+        '</div>' +
+        '<div id="build-output"></div>' +
+      '</div>';
+
+    var recapList = body.querySelector("#recap-list");
+    reportableMissions().forEach(function (m) {
+      var done = isComplete(m.id);
+      var row = document.createElement("div");
+      row.className = "recap-row " + (done ? "is-done" : "is-pending");
+      var note = progress.notes[m.id] ? " — " + escapeHtml(progress.notes[m.id]) : "";
+      row.innerHTML = (done
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/></svg>') +
+        '<span><b>' + m.tag + ':</b> ' + m.title + ' <span class="pts">+' + m.points + '</span>' + note + '</span>';
+      recapList.appendChild(row);
+    });
+
+    var output = body.querySelector("#build-output");
+    body.querySelector("#build-btn").addEventListener("click", function (e) {
+      var btn = e.currentTarget;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Building…';
+      var reportText = buildReportText();
+
+      loadCollagePhotos().then(function (photos) {
+        var collagePromise = photos.length ? buildCollageBlob(photos) : Promise.resolve(null);
+        return collagePromise.then(function (collageBlob) {
+          btn.hidden = true;
+          renderExportOutput(output, collageBlob, reportText);
+        });
+      }).catch(function () {
+        output.innerHTML = '<p class="export-note">Something went wrong building the recap. Your progress is safe — try again, or use the copy-paste report below.</p>';
+        renderExportOutput(output, null, reportText, true);
+      });
+    });
+  }
+
+  function renderExportOutput(output, collageBlob, reportText, appendOnly) {
+    var wrap = document.createElement("div");
+    var collageUrl = collageBlob ? URL.createObjectURL(collageBlob) : null;
+
+    var html = "";
+    if (collageUrl) {
+      html += '<div class="collage-preview"><img src="' + collageUrl + '" alt="Selfie collage"></div>';
+    } else {
+      html += '<p class="export-note">No selfies saved yet — the recap below still lists your completed challenges. Add selfies from Meet and Greet any time and build again.</p>';
+    }
+    html += '<div class="meet-actions">' +
+      '<button class="btn btn-primary btn-full" type="button" id="share-btn">Share my submission</button>' +
+      (collageUrl ? '<button class="btn btn-ghost btn-full" type="button" id="download-btn">Download collage image</button>' : '') +
+    '</div>' +
+    '<textarea class="report-box readout" id="report-box" readonly>' + escapeHtml(reportText) + '</textarea>' +
+    '<div class="meet-actions">' +
+      '<button class="btn btn-ghost btn-full" type="button" id="copy-btn">Copy report text</button>' +
+    '</div>' +
+    '<p class="export-note" id="share-fallback-note" hidden>Your phone didn’t offer a share menu for this. Download the collage above (or skip it if you have none yet), copy the report text, then paste it into an email or message and attach the image.</p>';
+    wrap.innerHTML = html;
+    output.appendChild(wrap);
+
+    if (collageUrl) {
+      wrap.querySelector("#download-btn").addEventListener("click", function () {
+        saveFile("blueprint-room-recap.png", collageBlob);
+      });
+    }
+
+    wrap.querySelector("#copy-btn").addEventListener("click", function () {
+      var box = wrap.querySelector("#report-box");
+      box.select();
+      try {
+        window.navigator.clipboard && window.navigator.clipboard.writeText(reportText);
+      } catch (e) { /* clipboard unavailable, selection still lets them copy manually */ }
+      showToast("Report text copied.");
+    });
+
+    wrap.querySelector("#share-btn").addEventListener("click", function () {
+      var shareData = { title: "The Blueprint Room — My Submission", text: reportText };
+      if (collageBlob) {
+        var file = new File([collageBlob], "blueprint-room-recap.png", { type: "image/png" });
+        if (window.navigator.canShare && window.navigator.canShare({ files: [file] })) {
+          shareData.files = [file];
+        }
+      }
+      if (window.navigator.share) {
+        window.navigator.share(shareData).catch(function () { /* user cancelled — no action needed */ });
+      } else {
+        wrap.querySelector("#share-fallback-note").hidden = false;
+        var subject = encodeURIComponent("The Blueprint Room — My Submission");
+        var bodyText = encodeURIComponent(reportText + (collageUrl ? "\n\n(Attach the downloaded collage image before sending.)" : ""));
+        window.location.href = "mailto:?subject=" + subject + "&body=" + bodyText;
+      }
+    });
+  }
+
+  /* ---------------- file saving ----------------
+     Inside the Claude Artifact viewer, a page can't trigger a browser
+     download directly (the sandbox blocks <a download>/blob links) — it
+     has to hand the file to the platform via the `downloads` capability
+     instead. Outside that viewer (e.g. this file hosted on its own site),
+     window.claude doesn't exist at all, so the plain anchor trick is used.
+     Both paths are kept so the file behaves the same whether it's opened
+     from claude.ai or from wherever it ends up being hosted. */
+  function saveFile(filename, blob) {
+    if (window.claude && window.claude.use) {
+      window.claude.use("downloads").then(function (downloads) {
+        if (!downloads) { saveFileViaAnchor(filename, blob); return; }
+        downloads.save({ filename: filename, data: blob }).then(function () {
+          showToast("Saved " + filename + ".");
+        }).catch(function (err) {
+          if (err && err.code === "declined") return;
+          saveFileViaAnchor(filename, blob);
+        });
+      }).catch(function () { saveFileViaAnchor(filename, blob); });
+    } else {
+      saveFileViaAnchor(filename, blob);
+    }
+  }
+  function saveFileViaAnchor(filename, blob) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   }
 
   /* ---------------- toast ---------------- */
