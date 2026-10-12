@@ -63,7 +63,11 @@
   }
 
   * { box-sizing: border-box; }
-  html, body { height: 100%; }
+  html, body {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+  }
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -80,13 +84,12 @@
     font-size: 16px;
     display: flex;
     justify-content: center;
-    overflow-x: hidden;
   }
 
   .app {
     width: 100%;
     max-width: 480px;
-    min-height: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -97,15 +100,22 @@
     .screen { padding-left: 28px; padding-right: 28px; }
   }
 
-  .screen {
+  /* ---------- scrollable middle, between the fixed header and footer ---------- */
+  .scroll-area {
     flex: 1;
-    padding: 20px 20px calc(104px + env(safe-area-inset-bottom, 0px));
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  .screen {
+    padding: 20px 20px 32px;
   }
 
   /* ---------- persistent progress header ---------- */
   .top-bar {
-    position: sticky;
-    top: 0;
+    flex-shrink: 0;
     z-index: 15;
     background: var(--navy);
     padding: calc(10px + env(safe-area-inset-top, 0px)) 20px 9px;
@@ -253,7 +263,14 @@
     border-top: 1px dashed var(--surface-edge);
   }
 
-  .timer-sheet { padding: 18px 18px 16px; margin-top: 18px; }
+  /* ---------- dashboard: merged stack-sheet ---------- */
+  .stack-sheet { margin-top: 18px; padding: 18px; }
+  .stack-section + .stack-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--surface-edge);
+  }
+
   .timer-label {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 11.5px;
@@ -281,17 +298,16 @@
   .timer-unit { font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); }
   .timer-done, .muted-line { font-size: 0.86rem; color: var(--text-dim); margin: 4px 0 0; }
 
-  .progress-sheet { padding: 18px; margin-top: 14px; }
   .progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
   .progress-head h2 { margin: 0; font-size: 0.95rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
   .progress-count { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; color: var(--text-dim); font-variant-numeric: tabular-nums; }
   .progress-bar { margin-top: 10px; height: 8px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--surface-edge); overflow: hidden; }
   .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.4s ease; }
 
-  .next-sheet { padding: 18px; margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
-  .next-sheet .tag { align-self: flex-start; }
-  .next-sheet h2 { margin: 2px 0 0; font-size: 1.05rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
-  .next-sheet p { margin: 0; font-size: 0.95rem; color: var(--text-dim); line-height: 1.55; }
+  .next-section { display: flex; flex-direction: column; gap: 10px; }
+  .next-section .tag { align-self: flex-start; }
+  .next-section h2 { margin: 2px 0 0; font-size: 1.05rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
+  .next-section p { margin: 0; font-size: 0.95rem; color: var(--text-dim); line-height: 1.55; }
 
   /* ---------- missions list ---------- */
   .section-label {
@@ -305,19 +321,29 @@
   }
   .section-label:first-of-type { margin-top: 4px; }
 
-  /* ---------- accordion sections ---------- */
+  /* ---------- accordion sections (merged into one panel) ---------- */
+  .accordion-group {
+    margin-top: 4px;
+    padding: 4px 16px;
+  }
   .accordion { margin: 0; }
-  .accordion:first-of-type .accordion-summary { margin-top: 4px; }
+  .accordion + .accordion { border-top: 1px dashed var(--surface-edge); }
   .accordion-summary {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 22px 0 10px;
-    padding: 13px 4px;
+    margin: 0;
+    padding: 16px 4px;
     cursor: pointer;
     user-select: none;
     list-style: none;
     min-height: 50px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
   }
   .accordion-summary::-webkit-details-marker { display: none; }
   .accordion-summary::marker { content: ""; }
@@ -337,7 +363,7 @@
     transition: transform 0.2s ease;
   }
   .accordion[open] > .accordion-summary .accordion-chevron { transform: rotate(180deg); }
-  .accordion .mission-list { animation: accordion-in 0.18s ease; }
+  .accordion .mission-list { padding-bottom: 16px; animation: accordion-in 0.18s ease; }
   @keyframes accordion-in {
     from { opacity: 0; transform: translateY(-4px); }
     to { opacity: 1; transform: translateY(0); }
@@ -564,12 +590,7 @@
 
   /* ---------- bottom nav ---------- */
   .bottom-nav {
-    position: fixed;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 480px;
+    flex-shrink: 0;
     display: flex;
     background: var(--surface);
     border-top: 1.5px solid var(--surface-edge);
@@ -578,26 +599,43 @@
   }
   .nav-btn {
     flex: 1;
-    min-height: 48px;
+    min-height: 56px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    padding: 6px 4px;
+    gap: 11px;
+    padding: 6px 14px;
     background: none;
     border: none;
-    border-radius: 6px;
+    border-radius: 12px;
     color: var(--text-dim);
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
     cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
   }
-  .nav-btn svg { width: 20px; height: 20px; }
-  .nav-btn.is-active { color: var(--navy); background: var(--surface-2); }
+  .nav-btn:active { transform: scale(0.97); }
+  .nav-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--text-dim);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-btn svg { width: 24px; height: 24px; }
+  .nav-btn-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .nav-btn.is-active { color: var(--navy); background: var(--accent-soft); }
+  .nav-btn.is-active .nav-btn-icon { background: var(--accent); color: var(--accent-ink); }
 
   /* ---------- toast ---------- */
   .toast {
@@ -640,7 +678,6 @@
     .timer-num { font-size: 1.25rem; }
   }
 </style>
-
 </head>
 <body>
 <div class="app" id="app">
@@ -661,6 +698,8 @@
     <div class="top-bar-track"><div class="top-bar-fill" id="top-bar-fill" style="width:0%"></div></div>
   </header>
 
+  <div class="scroll-area" id="scroll-area">
+
   <!-- ============ DASHBOARD ============ -->
   <section class="screen" id="view-dashboard">
     <div class="masthead">
@@ -669,37 +708,38 @@
       <p class="deck">The Blueprint Room — an escape room</p>
     </div>
 
-    <div class="sheet timer-sheet">
+    <div class="sheet stack-sheet">
       <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
-      <p class="timer-label">Day 1 closes in</p>
-      <div class="timer-grid" id="timer-grid">
-        <div class="timer-cell"><span class="timer-num" id="t-days">—</span><span class="timer-unit">Days</span></div>
-        <div class="timer-cell"><span class="timer-num" id="t-hours">—</span><span class="timer-unit">Hrs</span></div>
-        <div class="timer-cell"><span class="timer-num" id="t-mins">—</span><span class="timer-unit">Min</span></div>
-        <div class="timer-cell"><span class="timer-num" id="t-secs">—</span><span class="timer-unit">Sec</span></div>
-      </div>
-      <p class="timer-done" id="timer-done" hidden>Day 1 has wrapped — thanks for exploring the blueprint.</p>
-    </div>
 
-    <div class="sheet progress-sheet">
-      <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
-      <div class="progress-head">
-        <h2>Your points</h2>
-        <span class="progress-count" id="progress-count">0 / 0 pts</span>
+      <div class="stack-section timer-section">
+        <p class="timer-label">Day 1 closes in</p>
+        <div class="timer-grid" id="timer-grid">
+          <div class="timer-cell"><span class="timer-num" id="t-days">—</span><span class="timer-unit">Days</span></div>
+          <div class="timer-cell"><span class="timer-num" id="t-hours">—</span><span class="timer-unit">Hrs</span></div>
+          <div class="timer-cell"><span class="timer-num" id="t-mins">—</span><span class="timer-unit">Min</span></div>
+          <div class="timer-cell"><span class="timer-num" id="t-secs">—</span><span class="timer-unit">Sec</span></div>
+        </div>
+        <p class="timer-done" id="timer-done" hidden>Day 1 has wrapped — thanks for exploring the blueprint.</p>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-      <p class="muted-line" id="progress-sub">0 of 0 challenges complete</p>
-    </div>
 
-    <div class="sheet next-sheet" id="next-sheet">
-      <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
-      <span class="tag" id="next-tag">UP NEXT</span>
-      <h2 id="next-title">—</h2>
-      <p id="next-teaser">—</p>
-      <button class="btn btn-primary" id="next-btn" type="button">
-        Open challenge
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
+      <div class="stack-section progress-section">
+        <div class="progress-head">
+          <h2>Your points</h2>
+          <span class="progress-count" id="progress-count">0 / 0 pts</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <p class="muted-line" id="progress-sub">0 of 0 challenges complete</p>
+      </div>
+
+      <div class="stack-section next-section" id="next-sheet">
+        <span class="tag" id="next-tag">UP NEXT</span>
+        <h2 id="next-title">—</h2>
+        <p id="next-teaser">—</p>
+        <button class="btn btn-primary" id="next-btn" type="button">
+          Open challenge
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -710,41 +750,45 @@
       <h1 class="title">Mission Map</h1>
     </div>
 
-    <details class="accordion" id="accordion-knowledge">
-      <summary class="section-label accordion-summary">
-        <span class="accordion-summary-text">ATD Knowledge Check</span>
-        <span class="accordion-count" id="section-count-knowledge"></span>
-        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </summary>
-      <div class="mission-list" id="mission-list-knowledge"></div>
-    </details>
+    <div class="sheet accordion-group">
+      <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
 
-    <details class="accordion" id="accordion-experience">
-      <summary class="section-label accordion-summary">
-        <span class="accordion-summary-text">Conference Experience</span>
-        <span class="accordion-count" id="section-count-experience"></span>
-        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </summary>
-      <div class="mission-list" id="mission-list-experience"></div>
-    </details>
+      <details class="accordion" id="accordion-knowledge">
+        <summary class="accordion-summary">
+          <span class="accordion-summary-text">ATD Knowledge Check</span>
+          <span class="accordion-count" id="section-count-knowledge"></span>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mission-list" id="mission-list-knowledge"></div>
+      </details>
 
-    <details class="accordion" id="accordion-meet">
-      <summary class="section-label accordion-summary">
-        <span class="accordion-summary-text">Meet and Greet</span>
-        <span class="accordion-count" id="section-count-meet"></span>
-        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </summary>
-      <div class="mission-list" id="mission-list-meet"></div>
-    </details>
+      <details class="accordion" id="accordion-experience">
+        <summary class="accordion-summary">
+          <span class="accordion-summary-text">Conference Experience</span>
+          <span class="accordion-count" id="section-count-experience"></span>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mission-list" id="mission-list-experience"></div>
+      </details>
 
-    <details class="accordion" id="accordion-bonus">
-      <summary class="section-label accordion-summary">
-        <span class="accordion-summary-text">Bonus Round</span>
-        <span class="accordion-count" id="section-count-bonus"></span>
-        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </summary>
-      <div class="mission-list" id="mission-list-bonus"></div>
-    </details>
+      <details class="accordion" id="accordion-meet">
+        <summary class="accordion-summary">
+          <span class="accordion-summary-text">Meet and Greet</span>
+          <span class="accordion-count" id="section-count-meet"></span>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mission-list" id="mission-list-meet"></div>
+      </details>
+
+      <details class="accordion" id="accordion-bonus">
+        <summary class="accordion-summary">
+          <span class="accordion-summary-text">Bonus Round</span>
+          <span class="accordion-count" id="section-count-bonus"></span>
+          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </summary>
+        <div class="mission-list" id="mission-list-bonus"></div>
+      </details>
+    </div>
 
     <div class="finale-wrap">
       <p class="section-label">The finale</p>
@@ -764,14 +808,20 @@
     <div id="mission-body"></div>
   </section>
 
+  </div><!-- /.scroll-area -->
+
   <nav class="bottom-nav" aria-label="Primary">
     <button class="nav-btn" data-nav="dashboard" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 5l8 6.5"/><path d="M6 10.5V19a1 1 0 0 0 1 1h3v-5h4v5h3a1 1 0 0 0 1-1v-8.5"/></svg>
-      Home
+      <span class="nav-btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L12 5l8 6.5"/><path d="M6 10.5V19a1 1 0 0 0 1 1h3v-5h4v5h3a1 1 0 0 0 1-1v-8.5"/></svg>
+      </span>
+      <span class="nav-btn-label">Home</span>
     </button>
     <button class="nav-btn" data-nav="missions" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>
-      Missions
+      <span class="nav-btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>
+      </span>
+      <span class="nav-btn-label">Missions</span>
     </button>
   </nav>
 
@@ -859,14 +909,14 @@
       kind: "knowledge",
       type: "live",
       points: 15,
-      title: "Certifications",
-      teaser: "Name the two certifications ATD offers.",
+      title: "Two Core Credentials",
+      teaser: "Name the two core credentials ATD offers.",
       render: makeKeywordMission({
         id: "knowledge-certifications",
-        prompt: "What are the names of the two certifications offered by the Association for Talent Development?",
-        placeholder: "Type both certification names here…",
+        prompt: "What are the names of the two core credentials offered by the Association for Talent Development?",
+        placeholder: "Type both credential names here…",
         checkFn: function (text) { return containsAllKeywords(text, ["aptd", "cptd"]); },
-        wrongText: "Not quite — both are three-letter certifications from ATD.",
+        wrongText: "Not quite — both are four-letter credentials from ATD.",
         successText: "Correct — APTD (Associate Professional in Talent Development) and CPTD (Certified Professional in Talent Development)."
       })
     },
@@ -883,7 +933,7 @@
         prompt: "In what year was ATD first founded (under a different name)?",
         placeholder: "Enter a year",
         checkFn: function (text) { return containsAllKeywords(text, ["1943"]); },
-        wrongText: "Not quite — this one goes back to just after World War II.",
+        wrongText: "Not quite — this one goes back to the middle of World War II.",
         successText: "Correct — 1943, founded as the American Society for Training Directors (later ASTD, renamed ATD in 2014)."
       })
     },
@@ -1134,7 +1184,8 @@
       var active = target === name || (name === "mission" && target === "missions");
       b.classList.toggle("is-active", !!active);
     });
-    window.scrollTo(0, 0);
+    var scrollArea = document.getElementById("scroll-area");
+    if (scrollArea) scrollArea.scrollTop = 0;
   }
 
   navBtns.forEach(function (b) {
@@ -1901,6 +1952,5 @@
   }
 })();
 </script>
-
 </body>
 </html>
