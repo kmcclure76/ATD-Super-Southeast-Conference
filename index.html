@@ -99,7 +99,64 @@
 
   .screen {
     flex: 1;
-    padding: max(24px, env(safe-area-inset-top, 0px)) 20px calc(104px + env(safe-area-inset-bottom, 0px));
+    padding: 20px 20px calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ---------- persistent progress header ---------- */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background: var(--navy);
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 20px 9px;
+  }
+  .top-bar-inner {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 14px;
+  }
+  .top-bar-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-height: 24px;
+  }
+  .top-bar-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--bg);
+    font-variant-numeric: tabular-nums;
+  }
+  .top-bar-label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .top-bar-divider {
+    width: 1px;
+    align-self: stretch;
+    background: rgba(255, 255, 255, 0.22);
+  }
+  .top-bar-track {
+    margin-top: 8px;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.16);
+    overflow: hidden;
+  }
+  .top-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .top-bar-fill { transition: none; }
   }
 
   [hidden] { display: none !important; }
@@ -108,7 +165,7 @@
   .eyebrow {
     margin: 0 0 10px;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11.5px;
+    font-size: 12.5px;
     font-weight: 600;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -150,7 +207,7 @@
     background: var(--navy);
     color: var(--bg);
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;
     padding: 4px 9px;
@@ -163,11 +220,12 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 13px 20px;
+    min-height: 52px;
+    padding: 14px 20px;
     border-radius: 3px;
     font-family: "Roboto", Arial, sans-serif;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     cursor: pointer;
     transition: filter 0.15s ease, transform 0.1s ease;
     border: 1.5px solid transparent;
@@ -233,33 +291,61 @@
   .next-sheet { padding: 18px; margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
   .next-sheet .tag { align-self: flex-start; }
   .next-sheet h2 { margin: 2px 0 0; font-size: 1.05rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
-  .next-sheet p { margin: 0; font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; }
-
-  .reset-link {
-    display: block;
-    margin: 22px auto 0;
-    background: none;
-    border: none;
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11.5px;
-    letter-spacing: 0.04em;
-    color: var(--text-dim);
-    text-decoration: underline;
-    cursor: pointer;
-    padding: 10px;
-  }
+  .next-sheet p { margin: 0; font-size: 0.95rem; color: var(--text-dim); line-height: 1.55; }
 
   /* ---------- missions list ---------- */
   .section-label {
     margin: 22px 0 10px;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11.5px;
+    font-size: 13.5px;
     font-weight: 600;
     letter-spacing: 0.09em;
     text-transform: uppercase;
     color: var(--text-dim);
   }
   .section-label:first-of-type { margin-top: 4px; }
+
+  /* ---------- accordion sections ---------- */
+  .accordion { margin: 0; }
+  .accordion:first-of-type .accordion-summary { margin-top: 4px; }
+  .accordion-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 22px 0 10px;
+    padding: 13px 4px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    min-height: 50px;
+  }
+  .accordion-summary::-webkit-details-marker { display: none; }
+  .accordion-summary::marker { content: ""; }
+  .accordion-summary-text { flex: 1; }
+  .accordion-count {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--blue);
+    white-space: nowrap;
+  }
+  .accordion-chevron {
+    width: 19px;
+    height: 19px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .accordion[open] > .accordion-summary .accordion-chevron { transform: rotate(180deg); }
+  .accordion .mission-list { animation: accordion-in 0.18s ease; }
+  @keyframes accordion-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-chevron { transition: none; }
+    .accordion .mission-list { animation: none; }
+  }
 
   .mission-list { display: flex; flex-direction: column; gap: 10px; }
   .mission-tile {
@@ -284,21 +370,21 @@
   .mission-num {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-weight: 600;
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     color: var(--text-dim);
     letter-spacing: 0.05em;
     white-space: nowrap;
   }
   .mission-points {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
+    font-size: 11.5px;
     font-weight: 600;
     color: var(--blue);
     white-space: nowrap;
   }
   .mission-status {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
+    font-size: 11.5px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -310,8 +396,8 @@
     flex-shrink: 0;
   }
   .mission-status.is-complete { background: var(--accent-soft); color: var(--accent); }
-  .mission-tile h3 { margin: 8px 0 4px; font-size: 1rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
-  .mission-tile p { margin: 0; font-size: 0.85rem; color: var(--text-dim); line-height: 1.45; }
+  .mission-tile h3 { margin: 9px 0 5px; font-size: 1.08rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
+  .mission-tile p { margin: 0; font-size: 1rem; color: var(--text-dim); line-height: 1.55; }
   .mission-tile .mission-note { margin-top: 4px; font-size: 0.8rem; color: var(--navy-soft); font-style: italic; }
   .mission-tile.is-soon h3, .mission-tile.is-soon .mission-num { color: var(--text-dim); }
 
@@ -340,7 +426,7 @@
   .mission-header .mission-points { margin-left: auto; }
 
   .puzzle-sheet { padding: 30px 26px 28px; }
-  .prompt { margin: 0 0 20px; font-size: 0.96rem; line-height: 1.55; }
+  .prompt { margin: 0 0 20px; font-size: 1.05rem; line-height: 1.6; }
 
   .stat-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
   .stat { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
@@ -355,7 +441,7 @@
   .dim-tick::before { left: 0; }
   .dim-tick::after { right: 0; }
 
-  .instructions { margin: 16px 0 0; font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+  .instructions { margin: 16px 0 0; font-size: 0.92rem; color: var(--text-dim); line-height: 1.55; }
 
   .code-form { margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
   .code-boxes { display: flex; gap: 10px; }
@@ -392,7 +478,7 @@
   .stamp svg { width: 28px; height: 28px; }
   .stamp-check { stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw 0.5s ease 0.15s forwards; }
   @keyframes draw { to { stroke-dashoffset: 0; } }
-  .success-text { margin: 0; max-width: 32ch; font-size: 0.94rem; line-height: 1.6; color: var(--text); }
+  .success-text { margin: 0; max-width: 32ch; font-size: 1.05rem; line-height: 1.6; color: var(--text); }
   .success-actions { margin-top: 22px; width: 100%; }
 
   .soon-block { padding: 30px 26px; text-align: center; }
@@ -410,7 +496,7 @@
     border-radius: 4px;
     outline: none;
   }
-  textarea.report-box { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.86rem; resize: vertical; }
+  textarea.report-box { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.92rem; resize: vertical; }
   .text-field:focus, textarea:focus { border-color: var(--blue); }
 
   /* ---------- selfie (meet & greet) missions ---------- */
@@ -436,7 +522,7 @@
   .field-label {
     display: block;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11.5px;
+    font-size: 12.5px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -455,7 +541,7 @@
   .points-banner .label { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); }
 
   .recap-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 0; }
-  .recap-row { display: flex; align-items: flex-start; gap: 9px; font-size: 0.86rem; line-height: 1.4; }
+  .recap-row { display: flex; align-items: flex-start; gap: 9px; font-size: 0.92rem; line-height: 1.45; }
   .recap-row svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
   .recap-row.is-done { color: var(--text); }
   .recap-row.is-done svg { color: var(--accent); }
@@ -468,7 +554,7 @@
   .collage-preview img { width: 100%; border-radius: 4px; border: 1.5px solid var(--surface-edge); display: block; }
 
   .report-box.readout { min-height: 160px; margin-top: 14px; line-height: 1.5; }
-  .export-note { margin: 10px 0 0; font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+  .export-note { margin: 10px 0 0; font-size: 0.9rem; color: var(--text-dim); line-height: 1.55; }
   .spinner {
     display: inline-block; width: 14px; height: 14px;
     border: 2px solid currentColor; border-right-color: transparent;
@@ -516,7 +602,7 @@
   /* ---------- toast ---------- */
   .toast {
     position: fixed;
-    top: calc(14px + env(safe-area-inset-top, 0px));
+    top: calc(74px + env(safe-area-inset-top, 0px));
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 32px);
@@ -533,8 +619,8 @@
     animation: toast-in 0.3s ease;
   }
   .toast svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; color: var(--accent); }
-  .toast p { margin: 0; font-size: 0.84rem; line-height: 1.45; }
-  .toast-close { margin: -10px -8px -10px auto; background: none; border: none; color: var(--bg); opacity: 0.7; cursor: pointer; padding: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .toast p { margin: 0; font-size: 0.92rem; line-height: 1.5; }
+  .toast-close { margin: -12px -10px -12px auto; background: none; border: none; color: var(--bg); opacity: 0.7; cursor: pointer; padding: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
   .toast-close svg { width: 15px; height: 15px; margin: 0; color: inherit; }
   @keyframes toast-in { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
@@ -558,6 +644,22 @@
 </head>
 <body>
 <div class="app" id="app">
+
+  <!-- ============ PERSISTENT PROGRESS HEADER ============ -->
+  <header class="top-bar" id="top-bar">
+    <div class="top-bar-inner">
+      <span class="top-bar-stat">
+        <span class="top-bar-num" id="top-bar-count">0 / 0</span>
+        <span class="top-bar-label">Activities</span>
+      </span>
+      <span class="top-bar-divider" aria-hidden="true"></span>
+      <span class="top-bar-stat">
+        <span class="top-bar-num" id="top-bar-points">0 / 0</span>
+        <span class="top-bar-label">Points</span>
+      </span>
+    </div>
+    <div class="top-bar-track"><div class="top-bar-fill" id="top-bar-fill" style="width:0%"></div></div>
+  </header>
 
   <!-- ============ DASHBOARD ============ -->
   <section class="screen" id="view-dashboard">
@@ -599,8 +701,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
     </div>
-
-    <button class="reset-link" id="reset-btn" type="button">Reset progress (for testing)</button>
   </section>
 
   <!-- ============ MISSION MAP ============ -->
@@ -610,14 +710,41 @@
       <h1 class="title">Mission Map</h1>
     </div>
 
-    <p class="section-label">ATD Knowledge Check</p>
-    <div class="mission-list" id="mission-list-knowledge"></div>
+    <details class="accordion" id="accordion-knowledge">
+      <summary class="section-label accordion-summary">
+        <span class="accordion-summary-text">ATD Knowledge Check</span>
+        <span class="accordion-count" id="section-count-knowledge"></span>
+        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="mission-list" id="mission-list-knowledge"></div>
+    </details>
 
-    <p class="section-label">Conference Experience</p>
-    <div class="mission-list" id="mission-list-experience"></div>
+    <details class="accordion" id="accordion-experience">
+      <summary class="section-label accordion-summary">
+        <span class="accordion-summary-text">Conference Experience</span>
+        <span class="accordion-count" id="section-count-experience"></span>
+        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="mission-list" id="mission-list-experience"></div>
+    </details>
 
-    <p class="section-label">Meet and Greet</p>
-    <div class="mission-list" id="mission-list-meet"></div>
+    <details class="accordion" id="accordion-meet">
+      <summary class="section-label accordion-summary">
+        <span class="accordion-summary-text">Meet and Greet</span>
+        <span class="accordion-count" id="section-count-meet"></span>
+        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="mission-list" id="mission-list-meet"></div>
+    </details>
+
+    <details class="accordion" id="accordion-bonus">
+      <summary class="section-label accordion-summary">
+        <span class="accordion-summary-text">Bonus Round</span>
+        <span class="accordion-count" id="section-count-bonus"></span>
+        <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="mission-list" id="mission-list-bonus"></div>
+    </details>
 
     <div class="finale-wrap">
       <p class="section-label">The finale</p>
@@ -670,17 +797,24 @@
   // TODO(Susan): replace with the real Golden Egg vendor name.
   var GOLDEN_EGG_VENDOR = "REPLACE ME";
 
+  // TODO(Susan): replace with the real Golden Ticket code — this is the
+  // code placed somewhere physical at the conference (table tent, badge
+  // insert, etc.) for the bonus-round challenge below.
+  var GOLDEN_TICKET_CODE = "REPLACE ME";
+
   var DEADLINE = new Date("2026-10-15T17:00:00-04:00").getTime();
   var STORAGE_KEY = "atdEscapeRoom.progress.v2";
   var EVENT_LABEL = "ATD Super Southeast Conference — The Blueprint Room";
+  // Where players send their finished recap so it can be verified and scored.
+  var SUBMIT_EMAIL = "president-elect@atdsouthcarolina.org";
 
   /* =========================================================
      Mission registry — this is the single place to add or edit
      challenges. Each mission:
        id        stable key (never rename once people have progress)
        tag       short label shown as the challenge's badge
-       kind      "knowledge" | "experience" | "meet" — which mission
-                 map section it lives in
+       kind      "knowledge" | "experience" | "meet" | "bonus" — which
+                 mission map section it lives in
        type      "live" (playable now) | "soon" (visible placeholder)
        points    added to the running total when completed
        isFinale  true marks the single capstone export mission —
@@ -712,7 +846,7 @@
       render: makeKeywordMission({
         id: "knowledge-capability-model",
         prompt: "List the three capabilities in the ATD Talent Development Capability Model.",
-        placeholder: "e.g. Personal, Professional, Organizational…",
+        placeholder: "Type your answer here, separating each with a comma…",
         multiline: true,
         checkFn: function (text) { return containsAllKeywords(text, ["personal", "professional", "organizational"]); },
         wrongText: "Not quite — think in terms of Personal, Professional, and Organizational capability.",
@@ -730,10 +864,27 @@
       render: makeKeywordMission({
         id: "knowledge-certifications",
         prompt: "What are the names of the two certifications offered by the Association for Talent Development?",
-        placeholder: "e.g. APTD and CPTD",
+        placeholder: "Type both certification names here…",
         checkFn: function (text) { return containsAllKeywords(text, ["aptd", "cptd"]); },
         wrongText: "Not quite — both are three-letter certifications from ATD.",
         successText: "Correct — APTD (Associate Professional in Talent Development) and CPTD (Certified Professional in Talent Development)."
+      })
+    },
+    {
+      id: "knowledge-atd-founding",
+      tag: "CHALLENGE 3",
+      kind: "knowledge",
+      type: "live",
+      points: 10,
+      title: "ATD's Founding",
+      teaser: "What year was ATD first founded?",
+      render: makeKeywordMission({
+        id: "knowledge-atd-founding",
+        prompt: "In what year was ATD first founded (under a different name)?",
+        placeholder: "Enter a year",
+        checkFn: function (text) { return containsAllKeywords(text, ["1943"]); },
+        wrongText: "Not quite — this one goes back to just after World War II.",
+        successText: "Correct — 1943, founded as the American Society for Training Directors (later ASTD, renamed ATD in 2014)."
       })
     },
 
@@ -839,6 +990,25 @@
       render: makeMeetRenderer("meet-sponsor", "a conference sponsor")
     },
 
+    // ---- Bonus Round ----
+    {
+      id: "bonus-golden-ticket",
+      tag: "BONUS",
+      kind: "bonus",
+      type: "live",
+      points: 30,
+      title: "Golden Ticket",
+      teaser: "Find the hidden code somewhere at the conference and enter it for a bonus.",
+      render: makeKeywordMission({
+        id: "bonus-golden-ticket",
+        prompt: "Enter the hidden Golden Ticket code you found.",
+        placeholder: "Code",
+        checkFn: function (text) { return answersMatch(text, GOLDEN_TICKET_CODE); },
+        wrongText: "Not the Golden Ticket code — keep an eye out around the conference.",
+        successText: "Jackpot — bonus points banked!"
+      })
+    },
+
     // ---- Finale ----
     {
       id: "final-recap",
@@ -859,10 +1029,11 @@
       var parsed = raw ? JSON.parse(raw) : null;
       if (parsed && Array.isArray(parsed.completed)) {
         if (!parsed.notes) parsed.notes = {};
+        if (!parsed.participant) parsed.participant = { name: "", email: "" };
         return parsed;
       }
     } catch (e) { /* storage unavailable — fall through */ }
-    return { completed: [], notes: {} };
+    return { completed: [], notes: {}, participant: { name: "", email: "" } };
   }
   function saveProgress(p) {
     try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch (e) { /* ignore */ }
@@ -877,6 +1048,7 @@
     if (boot && Array.isArray(boot.completed) && boot.completed.length > progress.completed.length) {
       progress = boot;
       if (!progress.notes) progress.notes = {};
+      if (!progress.participant) progress.participant = { name: "", email: "" };
     }
   }
 
@@ -993,6 +1165,10 @@
     var pct = total ? Math.round((earned / total) * 100) : 0;
     document.getElementById("progress-fill").style.width = pct + "%";
 
+    document.getElementById("top-bar-count").textContent = doneCount + " / " + live.length;
+    document.getElementById("top-bar-points").textContent = earned + " / " + total;
+    document.getElementById("top-bar-fill").style.width = pct + "%";
+
     var next = live.find(function (m) { return !isComplete(m.id); });
     var nextSheet = document.getElementById("next-sheet");
     nextSheet.hidden = false;
@@ -1012,22 +1188,6 @@
       btn2.onclick = function () { openMission("final-recap"); };
     }
   }
-
-  document.getElementById("reset-btn").addEventListener("click", function () {
-    if (window.confirm("Clear saved progress and selfies on this device?")) {
-      progress = { completed: [], notes: {} };
-      saveProgress(progress);
-      memoryPhotos = {};
-      if (hasIDB) {
-        openPhotoDB().then(function (db) {
-          var tx = db.transaction(DB_STORE, "readwrite");
-          tx.objectStore(DB_STORE).clear();
-        }).catch(function () {});
-      }
-      renderDashboard();
-      renderMissionList();
-    }
-  });
 
   /* ---------------- countdown ---------------- */
   function tickTimer() {
@@ -1087,12 +1247,46 @@
       knowledge: document.getElementById("mission-list-knowledge"),
       experience: document.getElementById("mission-list-experience"),
       meet: document.getElementById("mission-list-meet"),
+      bonus: document.getElementById("mission-list-bonus"),
       finale: document.getElementById("mission-list-finale")
     };
     Object.keys(lists).forEach(function (k) { lists[k].innerHTML = ""; });
     MISSIONS.forEach(function (m) {
       var key = m.isFinale ? "finale" : m.kind;
       if (lists[key]) lists[key].appendChild(missionTile(m));
+    });
+
+    ["knowledge", "experience", "meet", "bonus"].forEach(function (k) {
+      var countEl = document.getElementById("section-count-" + k);
+      if (!countEl) return;
+      var ms = MISSIONS.filter(function (m) { return m.kind === k && m.type === "live" && !m.isFinale; });
+      var done = ms.filter(function (m) { return isComplete(m.id); }).length;
+      countEl.textContent = ms.length ? (done + " / " + ms.length) : "";
+    });
+  }
+
+  /* ---------------- accordion sections (collapsible, state remembered per device) ---------------- */
+  var ACCORDION_KEY = "atdEscapeRoom.accordion.v1";
+  function loadAccordionState() {
+    try {
+      var raw = window.localStorage.getItem(ACCORDION_KEY);
+      var parsed = raw ? JSON.parse(raw) : null;
+      return (parsed && typeof parsed === "object") ? parsed : {};
+    } catch (e) { return {}; }
+  }
+  function saveAccordionState(state) {
+    try { window.localStorage.setItem(ACCORDION_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+  function initAccordions() {
+    var state = loadAccordionState();
+    ["knowledge", "experience", "meet", "bonus"].forEach(function (k) {
+      var el = document.getElementById("accordion-" + k);
+      if (!el) return;
+      if (Object.prototype.hasOwnProperty.call(state, k)) el.open = !!state[k];
+      el.addEventListener("toggle", function () {
+        state[k] = el.open;
+        saveAccordionState(state);
+      });
     });
   }
 
@@ -1443,7 +1637,12 @@
 
   function buildReportText() {
     var earned = earnedPoints(), total = totalPoints();
+    var who = progress.participant || { name: "", email: "" };
     var lines = [EVENT_LABEL, "My Escape Room Submission", ""];
+    if (who.name) lines.push("Name: " + who.name);
+    if (who.email) lines.push("Email: " + who.email);
+    lines.push("Submit to: " + SUBMIT_EMAIL);
+    lines.push("");
     reportableMissions().forEach(function (m) {
       var done = isComplete(m.id);
       var mark = done ? "[x]" : "[ ]";
@@ -1496,24 +1695,35 @@
         ctx.fillStyle = "#eaf0f6";
         ctx.font = "700 20px Archivo, Arial, sans-serif";
         ctx.textBaseline = "middle";
-        ctx.fillText("The Blueprint Room · " + earnedPoints() + "/" + totalPoints() + " pts", pad, h - footer / 2);
+        var whoName = progress.participant && progress.participant.name ? progress.participant.name + " · " : "";
+        ctx.fillText("The Blueprint Room · " + whoName + earnedPoints() + "/" + totalPoints() + " pts", pad, h - footer / 2);
         return new Promise(function (resolve) { canvas.toBlob(resolve, "image/png"); });
       });
   }
 
   function renderFinale(body) {
     var earned = earnedPoints(), total = totalPoints();
+    var who = progress.participant || { name: "", email: "" };
     body.innerHTML =
       '<div class="sheet meet-sheet">' +
         cornerMarkup() +
         '<p class="prompt">This pulls together every selfie and answer you’ve submitted into one recap, ready to send in as your final Escape Room submission.</p>' +
         '<div class="points-banner"><span class="label">Points collected</span><span class="num">' + earned + ' / ' + total + '</span></div>' +
+        '<label class="field-label" for="participant-name">Your name</label>' +
+        '<input type="text" class="text-field" id="participant-name" placeholder="e.g. Jane Doe" maxlength="80" value="' + escapeHtml(who.name) + '">' +
+        '<label class="field-label" for="participant-email" style="margin-top:12px">Your email</label>' +
+        '<input type="email" class="text-field" id="participant-email" placeholder="you@example.com" maxlength="120" value="' + escapeHtml(who.email) + '">' +
         '<div class="recap-list" id="recap-list"></div>' +
         '<div class="meet-actions">' +
           '<button class="btn btn-primary btn-full" type="button" id="build-btn">Build my recap</button>' +
         '</div>' +
+        '<p class="feedback" id="participant-feedback">&nbsp;</p>' +
         '<div id="build-output"></div>' +
       '</div>';
+
+    var nameInput = body.querySelector("#participant-name");
+    var emailInput = body.querySelector("#participant-email");
+    var participantFeedback = body.querySelector("#participant-feedback");
 
     var recapList = body.querySelector("#recap-list");
     reportableMissions().forEach(function (m) {
@@ -1530,6 +1740,20 @@
 
     var output = body.querySelector("#build-output");
     body.querySelector("#build-btn").addEventListener("click", function (e) {
+      var name = nameInput.value.trim();
+      var email = emailInput.value.trim();
+      if (!name || !email) {
+        participantFeedback.textContent = "Enter your name and email so we can match your submission to you.";
+        return;
+      }
+      if (email.indexOf("@") === -1) {
+        participantFeedback.textContent = "That email doesn't look right — double-check it.";
+        return;
+      }
+      participantFeedback.textContent = "";
+      progress.participant = { name: name, email: email };
+      saveProgress(progress);
+
       var btn = e.currentTarget;
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Building…';
@@ -1551,6 +1775,7 @@
   function renderExportOutput(output, collageBlob, reportText, appendOnly) {
     var wrap = document.createElement("div");
     var collageUrl = collageBlob ? URL.createObjectURL(collageBlob) : null;
+    var canNativeShare = !!window.navigator.share;
 
     var html = "";
     if (collageUrl) {
@@ -1558,15 +1783,17 @@
     } else {
       html += '<p class="export-note">No selfies saved yet — the recap below still lists your completed challenges. Add selfies from Meet and Greet any time and build again.</p>';
     }
+    html += '<p class="export-note"><b>Send your results to ' + SUBMIT_EMAIL + '</b> so the committee can verify your completion and tally points.</p>';
     html += '<div class="meet-actions">' +
-      '<button class="btn btn-primary btn-full" type="button" id="share-btn">Share my submission</button>' +
+      '<button class="btn btn-primary btn-full" type="button" id="email-btn">Email my results</button>' +
       (collageUrl ? '<button class="btn btn-ghost btn-full" type="button" id="download-btn">Download collage image</button>' : '') +
+      (canNativeShare ? '<button class="btn btn-ghost btn-full" type="button" id="share-btn">Share another way</button>' : '') +
     '</div>' +
     '<textarea class="report-box readout" id="report-box" readonly>' + escapeHtml(reportText) + '</textarea>' +
     '<div class="meet-actions">' +
       '<button class="btn btn-ghost btn-full" type="button" id="copy-btn">Copy report text</button>' +
     '</div>' +
-    '<p class="export-note" id="share-fallback-note" hidden>Your phone didn’t offer a share menu for this. Download the collage above (or skip it if you have none yet), copy the report text, then paste it into an email or message and attach the image.</p>';
+    (collageUrl ? '<p class="export-note">Emailing doesn’t attach the photo automatically — download the collage above first, then attach it to the email before sending.</p>' : '');
     wrap.innerHTML = html;
     output.appendChild(wrap);
 
@@ -1585,23 +1812,25 @@
       showToast("Report text copied.");
     });
 
-    wrap.querySelector("#share-btn").addEventListener("click", function () {
-      var shareData = { title: "The Blueprint Room — My Submission", text: reportText };
-      if (collageBlob) {
-        var file = new File([collageBlob], "blueprint-room-recap.png", { type: "image/png" });
-        if (window.navigator.canShare && window.navigator.canShare({ files: [file] })) {
-          shareData.files = [file];
-        }
-      }
-      if (window.navigator.share) {
-        window.navigator.share(shareData).catch(function () { /* user cancelled — no action needed */ });
-      } else {
-        wrap.querySelector("#share-fallback-note").hidden = false;
-        var subject = encodeURIComponent("The Blueprint Room — My Submission");
-        var bodyText = encodeURIComponent(reportText + (collageUrl ? "\n\n(Attach the downloaded collage image before sending.)" : ""));
-        window.location.href = "mailto:?subject=" + subject + "&body=" + bodyText;
-      }
+    wrap.querySelector("#email-btn").addEventListener("click", function () {
+      var who = progress.participant && progress.participant.name ? progress.participant.name : "Attendee";
+      var subject = encodeURIComponent("Blueprint Room Submission — " + who);
+      var bodyText = encodeURIComponent(reportText + (collageUrl ? "\n\n(Attach the downloaded collage image before sending.)" : ""));
+      window.location.href = "mailto:" + SUBMIT_EMAIL + "?subject=" + subject + "&body=" + bodyText;
     });
+
+    if (canNativeShare) {
+      wrap.querySelector("#share-btn").addEventListener("click", function () {
+        var shareData = { title: "The Blueprint Room — My Submission", text: reportText };
+        if (collageBlob) {
+          var file = new File([collageBlob], "blueprint-room-recap.png", { type: "image/png" });
+          if (window.navigator.canShare && window.navigator.canShare({ files: [file] })) {
+            shareData.files = [file];
+          }
+        }
+        window.navigator.share(shareData).catch(function () { /* user cancelled — no action needed */ });
+      });
+    }
   }
 
   /* ---------------- file saving ----------------
@@ -1659,6 +1888,7 @@
 
   /* ---------------- boot ---------------- */
   function start() {
+    initAccordions();
     renderDashboard();
     renderMissionList();
     showView("dashboard");
