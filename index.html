@@ -784,15 +784,6 @@
         </summary>
         <div class="mission-list" id="mission-list-meet"></div>
       </details>
-
-      <details class="accordion" id="accordion-bonus">
-        <summary class="accordion-summary">
-          <span class="accordion-summary-text">Bonus Round</span>
-          <span class="accordion-count" id="section-count-bonus"></span>
-          <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-        </summary>
-        <div class="mission-list" id="mission-list-bonus"></div>
-      </details>
     </div>
 
     <div class="finale-wrap">
@@ -849,11 +840,6 @@
   // TODO(Susan): replace with the real Golden Egg vendor name.
   var GOLDEN_EGG_VENDOR = "REPLACE ME";
 
-  // TODO(Susan): replace with the real Golden Ticket code — this is the
-  // code placed somewhere physical at the conference (table tent, badge
-  // insert, etc.) for the bonus-round challenge below.
-  var GOLDEN_TICKET_CODE = "REPLACE ME";
-
   var DEADLINE = new Date("2026-10-15T17:00:00-04:00").getTime();
   var STORAGE_KEY = "atdEscapeRoom.progress.v2";
   var EVENT_LABEL = "ATD Super Southeast Conference — The Blueprint Room";
@@ -865,7 +851,7 @@
      challenges. Each mission:
        id        stable key (never rename once people have progress)
        tag       short label shown as the challenge's badge
-       kind      "knowledge" | "experience" | "meet" | "bonus" — which
+       kind      "knowledge" | "experience" | "meet" — which
                  mission map section it lives in
        type      "live" (playable now) | "soon" (visible placeholder)
        points    added to the running total when completed
@@ -910,7 +896,7 @@
       tag: "CHALLENGE 2",
       kind: "knowledge",
       type: "live",
-      points: 15,
+      points: 20,
       title: "Two Core Credentials",
       teaser: "Name the two core credentials ATD offers.",
       render: makeKeywordMission({
@@ -927,7 +913,7 @@
       tag: "CHALLENGE 3",
       kind: "knowledge",
       type: "live",
-      points: 10,
+      points: 15,
       title: "ATD's Founding",
       teaser: "What year was ATD first founded?",
       render: makeKeywordMission({
@@ -946,7 +932,7 @@
       tag: "CHALLENGE 1",
       kind: "experience",
       type: "live",
-      points: 10,
+      points: 15,
       title: "Speaker Activity One",
       teaser: "Enter the names of the sessions you attended on Day 1.",
       render: makeSelfReportMission({
@@ -961,7 +947,7 @@
       tag: "CHALLENGE 2",
       kind: "experience",
       type: "live",
-      points: 20,
+      points: 25,
       title: "The Golden Egg",
       teaser: "Find the vendor with the Golden Egg.",
       render: makeKeywordMission({
@@ -980,7 +966,7 @@
       tag: "CHALLENGE 1",
       kind: "meet",
       type: "live",
-      points: 15,
+      points: 20,
       title: "Speaker Activity Two",
       teaser: "Take a selfie with one of the speakers.",
       render: makeMeetRenderer("meet-speaker", "one of the speakers")
@@ -990,7 +976,7 @@
       tag: "CHALLENGE 2",
       kind: "meet",
       type: "live",
-      points: 15,
+      points: 20,
       title: "Board Member Activity",
       teaser: "Take a selfie with an Atlanta or South Carolina board member.",
       render: makeMeetRenderer("meet-board", "an Atlanta or South Carolina board member")
@@ -1000,7 +986,7 @@
       tag: "CHALLENGE 3",
       kind: "meet",
       type: "live",
-      points: 15,
+      points: 20,
       title: "Sister Chapter Member Activity",
       teaser: "Take a selfie with a sister chapter member.",
       render: makeMeetRenderer("meet-sister-chapter", "a sister chapter member")
@@ -1010,7 +996,7 @@
       tag: "CHALLENGE 4",
       kind: "meet",
       type: "live",
-      points: 15,
+      points: 20,
       title: "Vendor Expo Activity",
       teaser: "Take a selfie with a vendor.",
       render: makeMeetRenderer("meet-vendor", "a vendor")
@@ -1020,29 +1006,10 @@
       tag: "CHALLENGE 5",
       kind: "meet",
       type: "live",
-      points: 15,
+      points: 20,
       title: "Sponsor Activity",
       teaser: "Take a selfie with a conference sponsor.",
       render: makeMeetRenderer("meet-sponsor", "a conference sponsor")
-    },
-
-    // ---- Bonus Round ----
-    {
-      id: "bonus-golden-ticket",
-      tag: "BONUS",
-      kind: "bonus",
-      type: "live",
-      points: 30,
-      title: "Golden Ticket",
-      teaser: "Find the hidden code somewhere at the conference and enter it for a bonus.",
-      render: makeKeywordMission({
-        id: "bonus-golden-ticket",
-        prompt: "Enter the hidden Golden Ticket code you found.",
-        placeholder: "Code",
-        checkFn: function (text) { return answersMatch(text, GOLDEN_TICKET_CODE); },
-        wrongText: "Not the Golden Ticket code — keep an eye out around the conference.",
-        successText: "Jackpot — bonus points banked!"
-      })
     },
 
     // ---- Finale ----
@@ -1292,7 +1259,6 @@
       knowledge: document.getElementById("mission-list-knowledge"),
       experience: document.getElementById("mission-list-experience"),
       meet: document.getElementById("mission-list-meet"),
-      bonus: document.getElementById("mission-list-bonus"),
       finale: document.getElementById("mission-list-finale")
     };
     Object.keys(lists).forEach(function (k) { lists[k].innerHTML = ""; });
@@ -1301,7 +1267,7 @@
       if (lists[key]) lists[key].appendChild(missionTile(m));
     });
 
-    ["knowledge", "experience", "meet", "bonus"].forEach(function (k) {
+    ["knowledge", "experience", "meet"].forEach(function (k) {
       var countEl = document.getElementById("section-count-" + k);
       if (!countEl) return;
       var ms = MISSIONS.filter(function (m) { return m.kind === k && m.type === "live" && !m.isFinale; });
@@ -1324,7 +1290,7 @@
   }
   function initAccordions() {
     var state = loadAccordionState();
-    ["knowledge", "experience", "meet", "bonus"].forEach(function (k) {
+    ["knowledge", "experience", "meet"].forEach(function (k) {
       var el = document.getElementById("accordion-" + k);
       if (!el) return;
       if (Object.prototype.hasOwnProperty.call(state, k)) el.open = !!state[k];
