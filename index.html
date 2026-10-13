@@ -470,9 +470,10 @@
   .instructions { margin: 16px 0 0; font-size: 0.92rem; color: var(--text-dim); line-height: 1.55; }
 
   .code-form { margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-  .code-boxes { display: flex; gap: 10px; }
+  .code-boxes { display: flex; gap: 8px; justify-content: center; }
   .digit {
-    width: 50px; height: 58px; text-align: center;
+    flex: 1 1 0; min-width: 0; max-width: 50px;
+    height: 58px; text-align: center;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 1.6rem; font-weight: 600; color: var(--navy);
     background: var(--surface-2); border: 1.5px solid var(--surface-edge);
@@ -592,20 +593,23 @@
   .bottom-nav {
     flex-shrink: 0;
     display: flex;
+    justify-content: space-around;
+    align-items: center;
     background: var(--surface);
     border-top: 1.5px solid var(--surface-edge);
-    padding: 8px 14px calc(8px + env(safe-area-inset-bottom, 0px));
-    gap: 6px;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+    gap: 2px;
   }
   .nav-btn {
-    flex: 1;
-    min-height: 56px;
+    flex: 0 1 auto;
+    min-width: 0;
+    min-height: 52px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 11px;
-    padding: 6px 14px;
+    gap: 7px;
+    padding: 6px 9px;
     background: none;
     border: none;
     border-radius: 12px;
@@ -620,19 +624,20 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
     background: var(--surface-2);
     color: var(--text-dim);
     transition: background 0.15s ease, color 0.15s ease;
   }
-  .nav-btn svg { width: 24px; height: 24px; }
+  .nav-btn svg { width: 19px; height: 19px; }
   .nav-btn-label {
-    font-size: 14px;
+    font-size: 11.5px;
     font-weight: 700;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
+    white-space: nowrap;
   }
   .nav-btn.is-active { color: var(--navy); background: var(--accent-soft); }
   .nav-btn.is-active .nav-btn-icon { background: var(--accent); color: var(--accent-ink); }
@@ -671,7 +676,7 @@
   }
 
   @media (max-width: 380px) {
-    .digit { width: 44px; height: 52px; font-size: 1.4rem; }
+    .digit { max-width: 42px; height: 52px; font-size: 1.3rem; }
     .stat-num { font-size: 1.4rem; }
     .dim-tick { display: none; }
     .stat-row { justify-content: space-around; }
@@ -823,6 +828,12 @@
       </span>
       <span class="nav-btn-label">Missions</span>
     </button>
+    <button class="nav-btn" data-nav="final" type="button">
+      <span class="nav-btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h11l-2.5 3.5L16 11H5"/></svg>
+      </span>
+      <span class="nav-btn-label">Final</span>
+    </button>
   </nav>
 
   <div id="toast-slot"></div>
@@ -835,15 +846,6 @@
   /* =========================================================
      ANSWER KEYS — edit these as real event details are locked in.
      ========================================================= */
-  // TODO(Susan): replace with the real master list of vendor booth
-  // codes before the event. Players need to enter at least
-  // VENDOR_CODES_REQUIRED of these (any of them, any order).
-  var VALID_VENDOR_CODES = [
-    "ALPHA1", "ALPHA2", "ALPHA3", "ALPHA4", "ALPHA5", "ALPHA6",
-    "ALPHA7", "ALPHA8", "ALPHA9", "ALPHA10", "ALPHA11", "ALPHA12"
-  ];
-  var VENDOR_CODES_REQUIRED = 8;
-
   // TODO(Susan): replace with the real Golden Egg vendor name.
   var GOLDEN_EGG_VENDOR = "REPLACE ME";
 
@@ -882,7 +884,7 @@
       type: "live",
       points: 10,
       title: "Blueprint Access",
-      teaser: "Crack the 4-digit code hidden in today's numbers.",
+      teaser: "Crack the 5-digit code hidden in today's numbers.",
       render: renderBlueprintAccess
     },
     {
@@ -955,28 +957,12 @@
       })
     },
     {
-      id: "exp-vendor-codes",
+      id: "exp-golden-egg",
       tag: "CHALLENGE 2",
       kind: "experience",
       type: "live",
-      points: 25,
-      title: "Vendor Expo Activity Three",
-      teaser: "Enter the codes for eight vendor booths you visited.",
-      render: makeVendorCodesMission({
-        id: "exp-vendor-codes",
-        prompt: "Enter the codes for eight of the vendors whose booths you visited.",
-        validCodes: VALID_VENDOR_CODES,
-        required: VENDOR_CODES_REQUIRED,
-        successText: "Verified — nice lap around the expo hall."
-      })
-    },
-    {
-      id: "exp-golden-egg",
-      tag: "CHALLENGE 3",
-      kind: "experience",
-      type: "live",
       points: 20,
-      title: "Vendor Expo Activity Four",
+      title: "The Golden Egg",
       teaser: "Find the vendor with the Golden Egg.",
       render: makeKeywordMission({
         id: "exp-golden-egg",
@@ -1122,9 +1108,6 @@
     if (!na || !nb) return false;
     return na === nb || na.indexOf(nb) !== -1 || nb.indexOf(na) !== -1;
   }
-  function parseCodes(raw) {
-    return String(raw || "").split(/[\s,]+/).map(function (s) { return s.trim().toUpperCase(); }).filter(Boolean);
-  }
 
   /* ---------------- selfie photo storage (IndexedDB, falls back to memory) ----------------
      Photos are binary and can be sizeable, so they live separately from the
@@ -1176,12 +1159,18 @@
   };
   var navBtns = Array.prototype.slice.call(document.querySelectorAll(".nav-btn"));
 
+  var currentMissionId = null;
+
   function showView(name) {
     Object.keys(views).forEach(function (k) { views[k].hidden = k !== name; });
     navBtns.forEach(function (b) {
-      var target = b.getAttribute("data-nav") === "missions" ? "missions" :
-                   (b.getAttribute("data-nav") === "dashboard" ? "dashboard" : null);
-      var active = target === name || (name === "mission" && target === "missions");
+      var nav = b.getAttribute("data-nav");
+      var active;
+      if (name === "mission") {
+        active = currentMissionId === "final-recap" ? nav === "final" : nav === "missions";
+      } else {
+        active = nav === name;
+      }
       b.classList.toggle("is-active", !!active);
     });
     var scrollArea = document.getElementById("scroll-area");
@@ -1190,8 +1179,13 @@
 
   navBtns.forEach(function (b) {
     b.addEventListener("click", function () {
-      showView(b.getAttribute("data-nav"));
-      if (b.getAttribute("data-nav") === "missions") renderMissionList();
+      var nav = b.getAttribute("data-nav");
+      if (nav === "final") {
+        openMission("final-recap");
+      } else {
+        showView(nav);
+        if (nav === "missions") renderMissionList();
+      }
     });
   });
 
@@ -1345,6 +1339,7 @@
   function openMission(id) {
     var m = MISSIONS.find(function (x) { return x.id === id; });
     if (!m) return;
+    currentMissionId = id;
     document.getElementById("mission-tag").textContent = m.tag;
     document.getElementById("mission-points").textContent = m.points ? "+" + m.points + " pts" : "";
     var body = document.getElementById("mission-body");
@@ -1383,25 +1378,26 @@
 
   /* ---------------- Warm-up: Blueprint Access ---------------- */
   function renderBlueprintAccess(body, onComplete) {
-    var CODE = "2944";
+    var CODE = "26066";
     body.innerHTML =
       '<div class="sheet puzzle-sheet" id="puzzle-view">' +
         cornerMarkup() +
         '<p class="prompt">Every reimagined workplace starts with a blueprint. Study the plans below, then key in the access code to unlock the room.</p>' +
         '<div class="stat-row">' +
-          '<div class="stat"><span class="stat-num">2</span><span class="stat-label">Energizing&nbsp;Days</span></div>' +
+          '<div class="stat"><span class="stat-num">2</span><span class="stat-label">Energizing Days</span></div>' +
           '<div class="dim-tick" aria-hidden="true"></div>' +
-          '<div class="stat"><span class="stat-num">9</span><span class="stat-label">Program&nbsp;Pathways</span></div>' +
+          '<div class="stat"><span class="stat-num">60</span><span class="stat-label">Expert Voices</span></div>' +
           '<div class="dim-tick" aria-hidden="true"></div>' +
-          '<div class="stat"><span class="stat-num">44</span><span class="stat-label">Expert&nbsp;Voices</span></div>' +
+          '<div class="stat"><span class="stat-num">66</span><span class="stat-label">Conference Sessions</span></div>' +
         '</div>' +
-        '<p class="instructions">Combine the three figures above, in the order shown, into one 4&#8209;digit code.</p>' +
+        '<p class="instructions">Combine the three figures above, in the order shown, into one 5&#8209;digit code.</p>' +
         '<form class="code-form" id="code-form" autocomplete="off">' +
           '<div class="code-boxes" id="code-boxes">' +
-            '<input class="digit" id="digit-0" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 1 of 4">' +
-            '<input class="digit" id="digit-1" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 2 of 4">' +
-            '<input class="digit" id="digit-2" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 3 of 4">' +
-            '<input class="digit" id="digit-3" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 4 of 4">' +
+            '<input class="digit" id="digit-0" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 1 of 5">' +
+            '<input class="digit" id="digit-1" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 2 of 5">' +
+            '<input class="digit" id="digit-2" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 3 of 5">' +
+            '<input class="digit" id="digit-3" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 4 of 5">' +
+            '<input class="digit" id="digit-4" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 5 of 5">' +
           '</div>' +
           '<button class="btn btn-primary btn-full" type="submit">Unlock ' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
@@ -1419,7 +1415,7 @@
     var puzzleView = body.querySelector("#puzzle-view");
     var successView = body.querySelector("#success-view");
     var boxesEl = body.querySelector("#code-boxes");
-    var digits = [0, 1, 2, 3].map(function (i) { return body.querySelector("#digit-" + i); });
+    var digits = [0, 1, 2, 3, 4].map(function (i) { return body.querySelector("#digit-" + i); });
     var feedback = body.querySelector("#feedback");
 
     function reveal() {
@@ -1442,8 +1438,8 @@
     body.querySelector("#code-form").addEventListener("submit", function (e) {
       e.preventDefault();
       var code = digits.map(function (d) { return d.value; }).join("");
-      if (code.length < 4) {
-        feedback.textContent = "Enter all 4 digits.";
+      if (code.length < 5) {
+        feedback.textContent = "Enter all 5 digits.";
         return;
       }
       if (code === CODE) {
@@ -1548,57 +1544,6 @@
       onComplete(raw);
     });
     body.querySelector("#sr-back").addEventListener("click", function () {
-      showView("missions");
-      renderMissionList();
-    });
-  }
-
-  /* ---------------- Experience: vendor booth codes (N-of-M check) ---------------- */
-  function makeVendorCodesMission(cfg) { return function (body, onComplete) { renderVendorCodes(body, onComplete, cfg); }; }
-
-  function renderVendorCodes(body, onComplete, cfg) {
-    var already = isComplete(cfg.id);
-    body.innerHTML =
-      '<div class="sheet puzzle-sheet" id="vc-view"' + (already ? ' hidden' : '') + '>' +
-        cornerMarkup() +
-        '<p class="prompt">' + escapeHtml(cfg.prompt) + '</p>' +
-        '<p class="instructions">Separate codes with commas, spaces, or new lines. You need at least ' + cfg.required + ' valid codes.</p>' +
-        '<textarea class="text-field" id="vc-input" placeholder="e.g. ALPHA1, ALPHA2, ALPHA3 …" style="min-height:110px"></textarea>' +
-        '<div class="meet-actions">' +
-          '<button class="btn btn-primary btn-full" type="button" id="vc-submit">Check codes</button>' +
-        '</div>' +
-        '<p class="feedback" id="vc-feedback">&nbsp;</p>' +
-      '</div>' +
-      '<div class="sheet puzzle-sheet success-block" id="vc-success"' + (already ? '' : ' hidden') + '>' +
-        cornerMarkup() +
-        stampMarkup("Verified") +
-        '<p class="success-text">' + escapeHtml(cfg.successText || "Verified.") + '</p>' +
-        '<div class="success-actions"><button class="btn btn-ghost btn-full" id="vc-back" type="button">Back to mission map</button></div>' +
-      '</div>';
-
-    var vcView = body.querySelector("#vc-view");
-    var vcSuccess = body.querySelector("#vc-success");
-    var input = body.querySelector("#vc-input");
-    var feedback = body.querySelector("#vc-feedback");
-    if (already && progress.notes[cfg.id]) input.value = progress.notes[cfg.id];
-
-    body.querySelector("#vc-submit").addEventListener("click", function () {
-      var raw = input.value.trim();
-      if (!raw) { feedback.textContent = "Enter the codes you collected first."; return; }
-      var entered = parseCodes(raw);
-      var validSet = {};
-      cfg.validCodes.forEach(function (c) { validSet[c.toUpperCase()] = true; });
-      var uniqueValid = [];
-      entered.forEach(function (c) { if (validSet[c] && uniqueValid.indexOf(c) === -1) uniqueValid.push(c); });
-      if (uniqueValid.length >= cfg.required) {
-        vcView.hidden = true;
-        vcSuccess.hidden = false;
-        onComplete(raw);
-      } else {
-        feedback.textContent = "Found " + uniqueValid.length + " of " + cfg.required + " valid codes so far — keep looking!";
-      }
-    });
-    body.querySelector("#vc-back").addEventListener("click", function () {
       showView("missions");
       renderMissionList();
     });
