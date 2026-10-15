@@ -855,8 +855,7 @@
   /* =========================================================
      ANSWER KEYS — edit these as real event details are locked in.
      ========================================================= */
-  // TODO(Susan): replace with the real Golden Egg vendor name.
-  var GOLDEN_EGG_VENDOR = "REPLACE ME";
+  var GOLDEN_EGG_VENDOR = "ATD Chapter Services";
 
   var DEADLINE = new Date("2026-10-15T15:00:00-04:00").getTime();
   var STORAGE_KEY = "atdEscapeRoom.progress.v2";
@@ -967,10 +966,10 @@
       type: "live",
       points: 25,
       title: "The Golden Egg",
-      teaser: "Find the vendor with the Golden Egg.",
+      teaser: "Find the vendor with the Golden Egg. Hint: look for a vintage item on display.",
       render: makeKeywordMission({
         id: "exp-golden-egg",
-        prompt: "Enter the vendor with the Golden Egg.",
+        prompt: "Enter the vendor with the Golden Egg. Hint: look for a vintage item on display at their booth.",
         placeholder: "Vendor name",
         checkFn: function (text) { return answersMatch(text, GOLDEN_EGG_VENDOR); },
         wrongText: "Not the Golden Egg vendor — keep exploring the expo hall.",
