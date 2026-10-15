@@ -298,6 +298,20 @@
   .timer-unit { font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); }
   .timer-done, .muted-line { font-size: 0.86rem; color: var(--text-dim); margin: 4px 0 0; }
 
+  .deadline-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    background: var(--surface-2);
+    border: 1.5px solid var(--error);
+    border-radius: 4px;
+    padding: 11px 13px;
+    margin: 12px 0 0;
+  }
+  .deadline-banner svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; color: var(--error); }
+  .deadline-banner p { margin: 0; font-size: 0.86rem; line-height: 1.5; color: var(--text); }
+  .deadline-banner b { color: var(--error); }
+
   .progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
   .progress-head h2 { margin: 0; font-size: 0.95rem; font-family: "Archivo", Arial, sans-serif; font-weight: 700; color: var(--navy); }
   .progress-count { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; color: var(--text-dim); font-variant-numeric: tabular-nums; }
@@ -717,14 +731,18 @@
       <span class="corner-bl" aria-hidden="true"></span><span class="corner-br" aria-hidden="true"></span>
 
       <div class="stack-section timer-section">
-        <p class="timer-label">Day 1 closes in</p>
+        <p class="timer-label">Submissions close in</p>
         <div class="timer-grid" id="timer-grid">
           <div class="timer-cell"><span class="timer-num" id="t-days">—</span><span class="timer-unit">Days</span></div>
           <div class="timer-cell"><span class="timer-num" id="t-hours">—</span><span class="timer-unit">Hrs</span></div>
           <div class="timer-cell"><span class="timer-num" id="t-mins">—</span><span class="timer-unit">Min</span></div>
           <div class="timer-cell"><span class="timer-num" id="t-secs">—</span><span class="timer-unit">Sec</span></div>
         </div>
-        <p class="timer-done" id="timer-done" hidden>Day 1 has wrapped — thanks for exploring the blueprint.</p>
+        <p class="timer-done" id="timer-done" hidden>The 3:00 PM submission deadline has passed — thanks for exploring the blueprint.</p>
+        <div class="deadline-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          <p>Submissions must be in by <b>3:00 PM</b> to be considered.</p>
+        </div>
       </div>
 
       <div class="stack-section progress-section">
@@ -840,7 +858,7 @@
   // TODO(Susan): replace with the real Golden Egg vendor name.
   var GOLDEN_EGG_VENDOR = "REPLACE ME";
 
-  var DEADLINE = new Date("2026-10-15T17:00:00-04:00").getTime();
+  var DEADLINE = new Date("2026-10-15T15:00:00-04:00").getTime();
   var STORAGE_KEY = "atdEscapeRoom.progress.v2";
   var EVENT_LABEL = "ATD Super Southeast Conference — The Blueprint Room";
   // Where players send their finished recap so it can be verified and scored.
@@ -1671,6 +1689,10 @@
         cornerMarkup() +
         '<p class="prompt">This pulls together every selfie and answer you’ve submitted into one recap, ready to send in as your final Escape Room submission.</p>' +
         '<div class="points-banner"><span class="label">Points collected</span><span class="num">' + earned + ' / ' + total + '</span></div>' +
+        '<div class="deadline-banner">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>' +
+          '<p>Submissions must be in by <b>3:00 PM</b> to be considered — build and send your recap below before then.</p>' +
+        '</div>' +
         '<label class="field-label" for="participant-name">Your name</label>' +
         '<input type="text" class="text-field" id="participant-name" placeholder="e.g. Jane Doe" maxlength="80" value="' + escapeHtml(who.name) + '">' +
         '<label class="field-label" for="participant-email" style="margin-top:12px">Your email</label>' +
@@ -1737,7 +1759,12 @@
   function renderExportOutput(output, collageBlob, reportText, appendOnly) {
     var wrap = document.createElement("div");
     var collageUrl = collageBlob ? URL.createObjectURL(collageBlob) : null;
-    var canNativeShare = !!window.navigator.share;
+    var collageFile = collageBlob ? new File([collageBlob], "blueprint-room-recap.png", { type: "image/png" }) : null;
+    // True file-sharing support (mostly phones) is the only way to get the
+    // photo into the email app without a manual download — mailto: links
+    // can never carry an attachment, on any device or mail provider.
+    var canShareFile = !!(collageFile && window.navigator.canShare && window.navigator.canShare({ files: [collageFile] }));
+    var canShareText = !!window.navigator.share;
 
     var html = "";
     if (collageUrl) {
@@ -1746,20 +1773,32 @@
       html += '<p class="export-note">No selfies saved yet — the recap below still lists your completed challenges. Add selfies from Meet and Greet any time and build again.</p>';
     }
     html += '<p class="export-note"><b>Send your results to ' + SUBMIT_EMAIL + '</b> so the committee can verify your completion and tally points.</p>';
-    html += '<div class="meet-actions">' +
-      '<button class="btn btn-primary btn-full" type="button" id="email-btn">Email my results</button>' +
-      (collageUrl ? '<button class="btn btn-ghost btn-full" type="button" id="download-btn">Download collage image</button>' : '') +
-      (canNativeShare ? '<button class="btn btn-ghost btn-full" type="button" id="share-btn">Share another way</button>' : '') +
-    '</div>' +
-    '<textarea class="report-box readout" id="report-box" readonly>' + escapeHtml(reportText) + '</textarea>' +
-    '<div class="meet-actions">' +
-      '<button class="btn btn-ghost btn-full" type="button" id="copy-btn">Copy report text</button>' +
-    '</div>' +
-    (collageUrl ? '<p class="export-note">Emailing doesn’t attach the photo automatically — download the collage above first, then attach it to the email before sending.</p>' : '');
+
+    html += '<div class="meet-actions">';
+    if (canShareFile) {
+      html += '<button class="btn btn-primary btn-full" type="button" id="share-btn">Send my results (photo included)</button>';
+    } else {
+      html += '<button class="btn btn-primary btn-full" type="button" id="email-btn">Email my results</button>';
+      if (collageUrl) html += '<button class="btn btn-ghost btn-full" type="button" id="download-btn">Download collage image</button>';
+      if (canShareText) html += '<button class="btn btn-ghost btn-full" type="button" id="share-btn">Share another way</button>';
+    }
+    html += '</div>';
+
+    html += '<textarea class="report-box readout" id="report-box" readonly>' + escapeHtml(reportText) + '</textarea>' +
+      '<div class="meet-actions">' +
+        '<button class="btn btn-ghost btn-full" type="button" id="copy-btn">Copy report text</button>' +
+      '</div>';
+
+    if (canShareFile) {
+      html += '<p class="export-note">Tap Send, then choose Mail (or Gmail) from the share sheet — your collage photo and recap come along automatically, no download needed. Address it to <b>' + SUBMIT_EMAIL + '</b> before sending (the share sheet can’t fill that in for you).</p>';
+    } else if (collageUrl) {
+      html += '<p class="export-note">Emailing doesn’t attach the photo automatically on this device/browser — download the collage above first, then attach it to the email before sending.</p>';
+    }
+
     wrap.innerHTML = html;
     output.appendChild(wrap);
 
-    if (collageUrl) {
+    if (!canShareFile && collageUrl) {
       wrap.querySelector("#download-btn").addEventListener("click", function () {
         saveFile("blueprint-room-recap.png", collageBlob);
       });
@@ -1774,22 +1813,19 @@
       showToast("Report text copied.");
     });
 
-    wrap.querySelector("#email-btn").addEventListener("click", function () {
-      var who = progress.participant && progress.participant.name ? progress.participant.name : "Attendee";
-      var subject = encodeURIComponent("Blueprint Room Submission — " + who);
-      var bodyText = encodeURIComponent(reportText + (collageUrl ? "\n\n(Attach the downloaded collage image before sending.)" : ""));
-      window.location.href = "mailto:" + SUBMIT_EMAIL + "?subject=" + subject + "&body=" + bodyText;
-    });
+    if (!canShareFile) {
+      wrap.querySelector("#email-btn").addEventListener("click", function () {
+        var who = progress.participant && progress.participant.name ? progress.participant.name : "Attendee";
+        var subject = encodeURIComponent("Blueprint Room Submission — " + who);
+        var bodyText = encodeURIComponent(reportText + (collageUrl ? "\n\n(Attach the downloaded collage image before sending.)" : ""));
+        window.location.href = "mailto:" + SUBMIT_EMAIL + "?subject=" + subject + "&body=" + bodyText;
+      });
+    }
 
-    if (canNativeShare) {
+    if (canShareFile || canShareText) {
       wrap.querySelector("#share-btn").addEventListener("click", function () {
         var shareData = { title: "The Blueprint Room — My Submission", text: reportText };
-        if (collageBlob) {
-          var file = new File([collageBlob], "blueprint-room-recap.png", { type: "image/png" });
-          if (window.navigator.canShare && window.navigator.canShare({ files: [file] })) {
-            shareData.files = [file];
-          }
-        }
+        if (canShareFile) shareData.files = [collageFile];
         window.navigator.share(shareData).catch(function () { /* user cancelled — no action needed */ });
       });
     }
